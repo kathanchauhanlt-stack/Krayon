@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cinzel", serif;
+  --font-fantasy: "Cinzel", serif;
+  --font-comic: "Bangers", cursive;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Core palette from comic explosion images */
+  --color-obsidian: #0d0d0f;
+  --color-comic-teal:   #1a9faa;
+  --color-comic-teal-dark: #0d6b73;
+  --color-comic-orange: #f47c20;
+  --color-comic-orange-dark: #c45a00;
+  --color-comic-red:    #c0392b;
+  --color-comic-red-dark: #8c1a12;
+  --color-comic-yellow: #f5c518;
+  --color-comic-yellow-light: #fde96e;
+  --color-comic-white:  #f8f4e8;
+  --color-ink:          #111111;
+
+  /* ── Fantasy / pillar accent aliases ── */
+  --color-fantasy-gold:    #f5c518;
+  --color-fantasy-ice:     #1a9faa;
+  --color-fantasy-crimson: #c0392b;
+  --color-fantasy-ember:   #f47c20;
+  --color-fantasy-violet:  #7b2d8b;
+
+  /* ── Comic-book legacy aliases ── */
+  --color-comic-pink:  #FF007F;
+  --color-comic-blue:  #00E5FF;
+  --color-comic-green: #39FF14;
+  --color-amethyst:    #7C3AED;
+
+  /* ── Shadows ── */
+  --shadow-comic:        4px 4px 0 #111;
+  --shadow-comic-pink:   6px 6px 0 #FF007F;
+  --shadow-comic-blue:   6px 6px 0 #00E5FF;
+  --shadow-comic-yellow: 6px 6px 0 #f5c518;
+  --shadow-fantasy-glow: 0 0 18px rgba(245,197,24,0.35), 4px 4px 0 #111;
+
+  /* Page-specific bg colors */
+  --color-bg-init:   #0a1628;
+  --color-bg-about:  #0d3d47;
+  --color-bg-forge:  #2d0a08;
+  --color-bg-realm:  #0a2235;
+  --color-bg-vault:  #1a1a00;
+  --color-bg-guild:  #1a0d2e;
+  --color-bg-visions: #0d0d0f;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #0a1628;
+    color: #f8f4e8;
+    font-family: "Space Grotesk", sans-serif;
+    font-feature-settings: 'ss01' on, 'ss02' on;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   COMIC SPEED LINES — SVG-based backgrounds
+════════════════════════════════════════════ */
+@layer utilities {
+
+  /* Halftone dot overlay */
+  .bg-halftone {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 2px);
+    background-size: 10px 10px;
+  }
+
+  .bg-halftone-light {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 2px);
+    background-size: 8px 8px;
+  }
+
+  /* Speed lines radiating from centre */
+  .bg-speedlines {
+    background-image:
+      repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        transparent 6deg,
+        rgba(0,0,0,0.12) 6deg,
+        rgba(0,0,0,0.12) 7deg
+      );
+  }
+
+  /* Per-page tinted backgrounds with speed lines */
+  .page-bg-init {
+    background-color: #0a1628;
+    background-image:
+      radial-gradient(ellipse at 50% 60%, rgba(26,159,170,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(244,124,32,0.15) 0%, transparent 40%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 7deg, rgba(255,255,255,0.03) 7deg, rgba(255,255,255,0.03) 8deg);
+  }
+
+  .page-bg-about {
+    background-color: #0b2d38;
+    background-image:
+      radial-gradient(ellipse at 30% 40%, rgba(26,159,170,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(244,124,32,0.3) 0%, transparent 45%),
+      radial-gradient(ellipse at 60% 10%, rgba(245,197,24,0.2) 0%, transparent 35%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(0,0,0,0.08) 5deg, rgba(0,0,0,0.08) 6deg);
+  }
+
+  .page-bg-forge {
+    background-color: #2a0905;
+    background-image:
+      radial-gradient(ellipse at 50% 50%, rgba(245,197,24,0.5) 0%, rgba(244,124,32,0.4) 25%, transparent 65%),
+      radial-gradient(ellipse at 15% 80%, rgba(192,57,43,0.4) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 15%, rgba(192,57,43,0.3) 0%, transparent 40%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 4deg, rgba(0,0,0,0.15) 4deg, rgba(0,0,0,0.15) 5deg);
+  }
+
+  .page-bg-realm {
+    background-color: #071d30;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(26,159,170,0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 85%, rgba(244,124,32,0.25) 0%, transparent 40%),
+      radial-gradient(ellipse at 10% 60%, rgba(26,159,170,0.2) 0%, transparent 35%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 6deg, rgba(255,255,255,0.02) 6deg, rgba(255,255,255,0.02) 7deg);
+  }
+
+  .page-bg-vault {
+    background-color: #1a1200;
+    background-image:
+      radial-gradient(ellipse at 50% 40%, rgba(245,197,24,0.45) 0%, rgba(244,124,32,0.3) 30%, transparent 60%),
+      radial-gradient(ellipse at 10% 90%, rgba(244,124,32,0.25) 0%, transparent 40%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(0,0,0,0.12) 5deg, rgba(0,0,0,0.12) 6deg);
+  }
+
+  .page-bg-guild {
+    background-color: #120822;
+    background-image:
+      radial-gradient(ellipse at 60% 30%, rgba(244,124,32,0.35) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 70%, rgba(26,159,170,0.3) 0%, transparent 45%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 6deg, rgba(255,255,255,0.025) 6deg, rgba(255,255,255,0.025) 7deg);
+  }
+
+  .page-bg-visions {
+    background-color: #0d0d0f;
+    background-image:
+      radial-gradient(ellipse at 50% 50%, rgba(192,57,43,0.3) 0%, rgba(244,124,32,0.2) 30%, transparent 60%),
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(255,255,255,0.03) 5deg, rgba(255,255,255,0.03) 6deg);
+  }
+
+  /* ── Comic ink border panels ── */
+  .comic-panel {
+    border: 4px solid #111;
+    box-shadow: 6px 6px 0 #111;
+    background: #f8f4e8;
+    color: #111;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .comic-panel:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #111;
+  }
+
+  .comic-panel-dark {
+    border: 4px solid #111;
+    box-shadow: 6px 6px 0 #111;
+    background: rgba(10, 10, 12, 0.85);
+    color: #f8f4e8;
+    backdrop-filter: blur(8px);
+  }
+
+  /* ── Comic speech bubble ── */
+  .speech-bubble {
+    background: #f8f4e8;
+    border: 3px solid #111;
+    border-radius: 16px;
+    box-shadow: 4px 4px 0 #111;
+    position: relative;
+    color: #111;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 24px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 18px solid #111;
+  }
+
+  /* ── Comic explosion shape ── */
+  .starburst {
+    clip-path: polygon(
+      50% 0%, 61% 30%, 93% 12%, 75% 40%, 100% 50%,
+      75% 60%, 93% 88%, 61% 70%, 50% 100%, 39% 70%,
+      7% 88%, 25% 60%, 0% 50%, 25% 40%, 7% 12%, 39% 30%
+    );
+  }
+
+  /* ── Action labels (POW!, ZAP! etc) ── */
+  .action-text {
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.05em;
+    -webkit-text-stroke: 2px #111;
+    paint-order: stroke fill;
+  }
+
+  /* ── Nav icon pill in dock mode ── */
+  .nav-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-pill-icon {
+    width: 56px;
+    height: 56px;
+    border: 4px solid #111;
+    box-shadow: 5px 5px 0 #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+  .nav-pill-icon:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #111;
+  }
+  .nav-pill-label {
+    font-family: "Bangers", cursive;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    background: #111;
+    color: #f8f4e8;
+    padding: 2px 10px;
+    border: 2px solid #111;
+    white-space: nowrap;
+  }
+
+  /* Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(26,159,170,0.6);
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(26,159,170,0.9);
+  }
+
+  /* 3D card utils */
+  .perspective-1000 { perspective: 1000px; }
+  .rotate-y-180    { transform: rotateY(180deg); }
+  .preserve-3d     { transform-style: preserve-3d; }
+  .backface-hidden  { backface-visibility: hidden; }
+
+  /* Old compat classes still used in sub-pages */
+  .fantasy-panel {
+    border: 4px solid #111;
+    box-shadow: 6px 6px 0 #111;
+    background: #f8f4e8;
+    color: #111;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .fantasy-panel:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #111;
+  }
+  .fantasy-button-primary {
+    background: #f5c518;
+    border: 4px solid #111;
+    box-shadow: 5px 5px 0 #111;
+    color: #111;
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.08em;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .fantasy-button-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #111;
+  }
+  .fantasy-button-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #111;
+  }
+  .fantasy-button-secondary {
+    background: #1a9faa;
+    border: 4px solid #111;
+    box-shadow: 5px 5px 0 #111;
+    color: #f8f4e8;
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.08em;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .fantasy-button-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #111;
+  }
+  .glass-slab {
+    background: rgba(10,10,12,0.6);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(26,159,170,0.3);
+  }
+  .text-shadow-fantasy {
+    text-shadow: 3px 3px 0 #111, 0 0 20px rgba(245,197,24,0.4);
+  }
+  .text-shadow-comic {
+    text-shadow: 2px 2px 0 #111;
+  }
+  .bg-halftone-white {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1.5px, transparent 2px);
+    background-size: 8px 8px;
+  }
+
+  /* ── Shadow utilities ── */
+  .shadow-comic        { box-shadow: var(--shadow-comic); }
+  .shadow-comic-pink   { box-shadow: var(--shadow-comic-pink); }
+  .shadow-comic-blue   { box-shadow: var(--shadow-comic-blue); }
+  .shadow-comic-yellow { box-shadow: var(--shadow-comic-yellow); }
+  .shadow-fantasy-glow { box-shadow: var(--shadow-fantasy-glow); }
+
+  /* ── Button utilities ── */
+  .comic-button-pink {
+    background: #FF007F;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0 #111;
+    color: #fff;
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-pink:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-pink:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  .comic-button-cyan {
+    background: #00E5FF;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0 #111;
+    color: #111;
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-cyan:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-cyan:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  .comic-button-yellow {
+    background: #f5c518;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0 #111;
+    color: #111;
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-yellow:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-yellow:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  /* ── Mobile-safe utilities ── */
+  .touch-action-none { touch-action: none; }
+  .h-screen-safe     { height: 100dvh; }
+  .no-scrollbar-x    { overflow-x: hidden; }
+}
+
+/* ── Shimmer keyframe for streaming indicator ── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
