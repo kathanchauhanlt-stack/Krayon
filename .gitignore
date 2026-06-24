@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+server/ainime.db
+server/ainime.db-shm
+server/ainime.db-wal
