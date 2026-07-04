@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Crown, Sparkles, Hexagon, User, Pencil, Check, Globe, Archive, Wand2, Clock, Loader2 } from "lucide-react";
+import { Crown, Sparkles, Hexagon, User, Pencil, Check, Globe, Archive, Wand2, Clock, Loader2, LogIn } from "lucide-react";
 import { Pillar } from "../types";
 import { getUser, updateUser, type ApiUser, type ApiComic } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 interface GuildProps { setActivePillar?: (p: Pillar) => void; }
 
@@ -14,6 +15,7 @@ const RANK_COLORS: Record<string, string> = {
 };
 
 export default function Guild({ setActivePillar }: GuildProps) {
+  const { user: authUser, signInWithGoogle, signInAnonymously } = useAuth();
   const [user, setUser]         = useState<ApiUser | null>(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
@@ -23,10 +25,14 @@ export default function Guild({ setActivePillar }: GuildProps) {
   const [saving,   setSaving]   = useState(false);
 
   const load = useCallback(async () => {
+    if (!authUser) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      const data = await getUser("u1");
+      const data = await getUser(authUser.uid);
       setUser(data);
       setEditName(data.username);
       setEditBio(data.bio);
@@ -35,21 +41,38 @@ export default function Guild({ setActivePillar }: GuildProps) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authUser]);
 
   useEffect(() => { load(); }, [load]);
 
   const handleSave = async () => {
-    if (!user || saving) return;
+    if (!user || saving || !authUser) return;
     setSaving(true);
     try {
-      await updateUser("u1", { username: editName, bio: editBio });
+      await updateUser(authUser.uid, { username: editName, bio: editBio });
       setUser(u => u ? { ...u, username: editName, bio: editBio } : u);
       setEditing(false);
     } finally {
       setSaving(false);
     }
   };
+
+  if (!authUser) return (
+    <div className="h-full flex items-center justify-center p-6">
+      <div className="max-w-md border-4 border-ink bg-comic-white p-8 shadow-comic rotate-1 text-center flex flex-col gap-5">
+        <h2 className="text-3xl font-comic text-ink uppercase leading-none">Guild Sanctum Locked</h2>
+        <p className="text-sm font-bold text-ink/75">Sign in to initialize your chronicler profile, track your mana pulse, and view your published masterpieces.</p>
+        <div className="flex flex-col gap-3">
+          <button onClick={signInWithGoogle} className="comic-button-pink py-3 text-sm flex items-center justify-center gap-2">
+            <LogIn size={16} /> Sign In with Google
+          </button>
+          <button onClick={signInAnonymously} className="comic-button-cyan py-3 text-sm flex items-center justify-center gap-2">
+            <User size={16} /> Enter as Guest
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   if (loading) return (
     <div className="h-full flex items-center justify-center gap-3">
@@ -63,7 +86,7 @@ export default function Guild({ setActivePillar }: GuildProps) {
       <div className="max-w-md border-4 border-ink bg-comic-yellow p-6 shadow-comic rotate-1 text-center">
         <p className="font-comic text-2xl text-ink uppercase mb-2">⚡ API Offline</p>
         <p className="text-sm font-bold text-ink">{error}</p>
-        <p className="text-xs text-ink/70 mt-2">Run: <code className="bg-ink text-comic-white px-2 py-0.5">npx tsx server/index.ts</code></p>
+        <p className="text-xs text-ink/70 mt-2">Could not retrieve profile from Firestore database.</p>
         <button onClick={load} className="mt-4 comic-button-pink px-4 py-2 text-sm">Retry</button>
       </div>
     </div>
@@ -71,7 +94,8 @@ export default function Guild({ setActivePillar }: GuildProps) {
 
   if (!user) return null;
 
-  const manaDisplay = user.mana >= 1000 ? `${(user.mana / 1000).toFixed(1)}K` : String(user.mana);
+  const manaDisplay = user.mana !== undefined && user.mana >= 1000 ? `${(user.mana / 1000).toFixed(1)}K` : String(user.mana ?? 0);
+
 
   return (
     <div className="h-full overflow-y-auto custom-scrollbar bg-transparent relative">

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, Wand2, Type, Music, X, BookOpen, Loader2 } from "lucide-react";
 import { generateDialogue, enhanceScenePrompt } from "../services/gemini";
 
-interface HallOfVisionsProps { onClose: () => void; }
+interface HallOfVisionsProps { onClose?: () => void; }
 
 const PAGES = [
   {
@@ -139,7 +139,7 @@ export default function HallOfVisions({ onClose }: HallOfVisionsProps) {
 
       {/* ── Close button ── */}
       <button
-        onClick={onClose}
+        onClick={onClose || (() => window.history.back())}
         className="absolute top-6 right-6 z-50 w-12 h-12 bg-obsidian border border-fantasy-gold/50 flex items-center justify-center
           hover:bg-fantasy-crimson hover:text-white transition-all shadow-fantasy-glow"
       >
