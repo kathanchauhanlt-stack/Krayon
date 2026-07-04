@@ -1,6 +1,8 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, Hammer, User, Library, Zap, Crown } from "lucide-react";
+import { Sparkles, Hammer, User, Library, Zap, Crown, LogIn, LogOut, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const NAV_ITEMS = [
   { id: 'realm',   path: '/realm',   label: 'Realm',   icon: Sparkles, color: "from-[#00F0FF] to-[#0080FF]" },
@@ -13,13 +15,11 @@ const NAV_ITEMS = [
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, profile, loading, signInWithGoogle, signInAnonymously, logout } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const isInit = location.pathname === "/";
   const isAbout = location.pathname === "/about";
-
-  // If we are on the init screen or about screen, we might want to hide the standard layout dock
-  // or show it differently. The user wanted the init screen to be retained but better structured.
-  // We will keep the dock hidden on init.
   const showDock = !isInit && !isAbout;
 
   return (
@@ -60,15 +60,105 @@ export default function Layout() {
               </span>
             </div>
 
-            {/* Path Indicator */}
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-sm tracking-widest uppercase opacity-70">
+            {/* Auth Actions & Path */}
+            <div className="flex items-center gap-4">
+              <span className="font-bold text-sm tracking-widest uppercase opacity-75 hidden sm:inline border-r border-white/10 pr-4">
                 {location.pathname.substring(1) || 'Nexus'}
               </span>
+
+              {loading ? (
+                <Loader2 size={20} className="animate-spin text-comic-yellow" />
+              ) : user ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-[#111] border border-white/15 px-3 py-1.5 rounded-xl">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="avatar" className="w-6 h-6 rounded-full border border-white/10" referrerPolicy="no-referrer" />
+                    ) : (
+                      <User size={14} className="text-comic-orange" />
+                    )}
+                    <span className="text-xs font-bold font-mono tracking-wider max-w-[100px] truncate">
+                      {profile?.username || "Guest"}
+                    </span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="p-2 rounded-xl hover:bg-comic-red/10 border border-transparent hover:border-comic-red/20 text-white/60 hover:text-comic-red transition-all cursor-pointer"
+                    title="Sign Out"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowLoginModal(true)}
+                  className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#FF3D00] text-white px-4 py-2 rounded-xl border border-black shadow-[2px_2px_0_#000] font-bold text-xs uppercase hover:translate-y-px hover:shadow-none transition-all cursor-pointer"
+                >
+                  <LogIn size={14} /> Sign In
+                </button>
+              )}
             </div>
           </motion.header>
         )}
       </AnimatePresence>
+
+      {/* ── AUTH MODAL OVERLAY ── */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLoginModal(false)}
+              className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              className="relative w-full max-w-sm bg-[#111820] border-4 border-black p-8 shadow-[8px_8px_0_#000] z-10 flex flex-col gap-6 text-center text-[#f8f4e8]"
+            >
+              <div>
+                <h3 className="text-3xl font-comic text-comic-yellow tracking-wider text-shadow-comic leading-none mb-2">
+                  ENTER THE SANCTUM
+                </h3>
+                <p className="text-xs uppercase font-bold tracking-widest text-[#f8f4e8]/60">
+                  Choose your path to start forging
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={async () => {
+                    await signInWithGoogle();
+                    setShowLoginModal(false);
+                  }}
+                  className="w-full bg-[#EA4335] text-white border-4 border-black py-3 rounded-xl font-comic uppercase tracking-wider text-sm shadow-[4px_4px_0_#000] hover:translate-y-px hover:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  Sign In with Google
+                </button>
+                <button
+                  onClick={async () => {
+                    await signInAnonymously();
+                    setShowLoginModal(false);
+                  }}
+                  className="w-full bg-comic-teal text-[#111] border-4 border-black py-3 rounded-xl font-comic uppercase tracking-wider text-sm shadow-[4px_4px_0_#000] hover:translate-y-px hover:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  Enter as Guest
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="text-xs uppercase font-bold tracking-widest text-white/40 hover:text-white transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
 
       {/* ── MAIN CONTENT OUTLET ── */}
       <main className="flex-1 relative overflow-hidden z-[10] flex flex-col">

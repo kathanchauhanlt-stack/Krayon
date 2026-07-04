@@ -1,27 +1,33 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "motion/react";
-import { Lock, Unlock, Zap, Trash2, ShieldAlert, Plus, Eye, Loader2 } from "lucide-react";
+import { Lock, Unlock, Zap, Trash2, ShieldAlert, Plus, Eye, Loader2, LogIn, User } from "lucide-react";
 import { Pillar } from "../types";
 import { getDrafts, deleteDraft, type ApiDraft } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 interface VaultProps { setActivePillar?: (p: Pillar) => void; }
 
 export default function Vault({ setActivePillar }: VaultProps) {
+  const { user: authUser, signInWithGoogle, signInAnonymously } = useAuth();
   const [drafts, setDrafts]   = useState<ApiDraft[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    if (!authUser) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      setDrafts(await getDrafts("u1"));
+      setDrafts(await getDrafts(authUser.uid));
     } catch (e: any) {
       setError(e.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authUser]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -31,6 +37,24 @@ export default function Vault({ setActivePillar }: VaultProps) {
       setDrafts(prev => prev.filter(d => d.id !== id));
     } catch { /* silent */ }
   };
+
+  if (!authUser) return (
+    <div className="h-full flex items-center justify-center p-6">
+      <div className="max-w-md border-4 border-ink bg-comic-white p-8 shadow-comic rotate-1 text-center flex flex-col gap-5">
+        <h2 className="text-3xl font-comic text-ink uppercase leading-none">Vault Encrypted</h2>
+        <p className="text-sm font-bold text-ink/75">Your draft archives are securely stored in the cloud. Please sign in to decrypt and resume your comic creations.</p>
+        <div className="flex flex-col gap-3">
+          <button onClick={signInWithGoogle} className="comic-button-pink py-3 text-sm flex items-center justify-center gap-2">
+            <LogIn size={16} /> Decrypt with Google
+          </button>
+          <button onClick={signInAnonymously} className="comic-button-cyan py-3 text-sm flex items-center justify-center gap-2">
+            <User size={16} /> Enter as Guest
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
 
   const totalPages = drafts.reduce((a, d) => a + d.pages_count, 0);
   const locked     = drafts.filter(d => d.locked).length;

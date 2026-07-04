@@ -1,3 +1,4 @@
+import React from "react";
 import { Pillar } from "../types";
 
 /* ── shared cloud SVG shape ─────────────────────────────────────── */
@@ -357,7 +358,7 @@ function VisionsBG() {
    ROUTER
 ══════════════════════════════════════════════════════════════════ */
 export default function PageBackground({ pillar }: { pillar: Pillar | string }) {
-  const BG: Record<string, JSX.Element> = {
+  const BG: Record<string, React.ReactElement> = {
     init:    <InitBG />,
     about:   <AboutBG />,
     forge:   <ForgeBG />,
