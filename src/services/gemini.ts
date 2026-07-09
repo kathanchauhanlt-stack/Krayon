@@ -1,30 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
-
-let genAI: GoogleGenAI | null = null;
-
-const getGemini = (): GoogleGenAI => {
-  if (!genAI) {
-    genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
-  }
-  return genAI;
-};
+const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
 /**
  * Takes user's raw scene description and returns an AI-enhanced, more vivid version.
  */
 export async function enhanceScenePrompt(rawPrompt: string): Promise<string> {
-  const ai = getGemini();
-  const systemInstruction =
-    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
-
   try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\n${rawPrompt}`,
+    const res = await fetch(`${BASE}/api/ai/enhance-scene`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: rawPrompt }),
     });
-    return result.text ?? rawPrompt;
+    if (!res.ok) throw new Error("Server error");
+    const data = await res.json();
+    return data.enhancedText;
   } catch (error) {
-    console.error("Gemini enhanceScenePrompt error:", error);
+    console.error("enhanceScenePrompt error:", error);
     return rawPrompt;
   }
 }
@@ -38,38 +28,17 @@ export async function generatePanelDescriptions(
   style: string,
   title: string
 ): Promise<string[]> {
-  const ai = getGemini();
-
-  const systemInstruction = `You are a professional comic book writer. 
-Comic title: "${title || "Untitled"}". Genre: ${genre}. Art style: ${style}.
-Given the scene below, generate exactly 4 panel descriptions for a comic page.
-Format your response as a numbered list:
-1. Panel 1: ...
-2. Panel 2: ...
-3. Panel 3: ...
-4. Panel 4: ...
-Each description should be one sentence describing camera angle, action, and mood. Do NOT add extra text.`;
-
   try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\nScene: ${scene}`,
+    const res = await fetch(`${BASE}/api/ai/generate-panels`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scene, genre, style, title }),
     });
-
-    const raw = result.text ?? "";
-    // Split by numbered list pattern
-    const lines = raw
-      .split(/\n/)
-      .map((l) => l.replace(/^\d+\.\s*/u, "").trim())
-      .filter((l) => l.length > 0);
-
-    // Ensure we always return exactly 4 elements
-    while (lines.length < 4) {
-      lines.push(`Panel ${lines.length + 1}: The scene continues...`);
-    }
-    return lines.slice(0, 4);
+    if (!res.ok) throw new Error("Server error");
+    const data = await res.json();
+    return data.panels;
   } catch (error) {
-    console.error("Gemini generatePanelDescriptions error:", error);
+    console.error("generatePanelDescriptions error:", error);
     return [
       "Panel 1: Establishing wide shot.",
       "Panel 2: Close-up on the protagonist.",
@@ -87,24 +56,17 @@ export async function generateDialogue(
   panelContext: string,
   character: string
 ): Promise<string> {
-  const ai = getGemini();
-
-  const prompt = `You are writing dialogue for a comic book character.
-Character: ${character}.
-Scene context: ${panelContext}.
-Write ONE single line of dialogue (maximum 12 words) that this character would say. Return ONLY the dialogue text, no quotation marks, no attribution, no explanations.`;
-
   try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const res = await fetch(`${BASE}/api/ai/generate-dialogue`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ panelContext, character }),
     });
-    const text = (result.text ?? "").trim().replace(/^["']|["']$/g, "");
-    // Clamp to 12 words
-    const words = text.split(/\s+/);
-    return words.slice(0, 12).join(" ");
+    if (!res.ok) throw new Error("Server error");
+    const data = await res.json();
+    return data.dialogue;
   } catch (error) {
-    console.error("Gemini generateDialogue error:", error);
+    console.error("generateDialogue error:", error);
     return "No one ever truly disappears.";
   }
 }
@@ -116,25 +78,35 @@ export async function streamSceneEnhancement(
   rawPrompt: string,
   onChunk: (text: string) => void
 ): Promise<void> {
-  const ai = getGemini();
-
-  const systemInstruction =
-    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
-
   try {
-    const stream = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\n${rawPrompt}`,
-    });
+    const url = `${BASE}/api/ai/stream-scene?prompt=${encodeURIComponent(rawPrompt)}`;
+    const eventSource = new EventSource(url);
 
-    for await (const chunk of stream) {
-      const text = chunk.text;
-      if (text) {
-        onChunk(text);
+    eventSource.onmessage = (event) => {
+      if (event.data === "[DONE]") {
+        eventSource.close();
+        return;
       }
-    }
+      try {
+        const data = JSON.parse(event.data);
+        if (data.text) {
+          onChunk(data.text);
+        } else if (data.error) {
+          onChunk(`\n[${data.error}]`);
+          eventSource.close();
+        }
+      } catch (err) {
+        console.error("Failed to parse stream event:", err);
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error("EventSource error:", err);
+      eventSource.close();
+      onChunk("\n[AI Enhancement unavailable. Please try again.]");
+    };
   } catch (error) {
-    console.error("Gemini streamSceneEnhancement error:", error);
+    console.error("streamSceneEnhancement error:", error);
     onChunk("\n[AI Enhancement unavailable. Please try again.]");
   }
 }

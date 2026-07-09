@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, Wand2, Type, Music, X, BookOpen, Loader2 } from "lucide-react";
 import { generateDialogue, enhanceScenePrompt } from "../services/gemini";
@@ -55,6 +56,7 @@ const PAGES = [
 ];
 
 export default function HallOfVisions({ onClose }: HallOfVisionsProps) {
+  const navigate = useNavigate();
   const [pageIndex, setPageIndex] = useState(0);
   const totalPages = PAGES.length;
   const currentPage = PAGES[pageIndex];
@@ -139,7 +141,7 @@ export default function HallOfVisions({ onClose }: HallOfVisionsProps) {
 
       {/* ── Close button ── */}
       <button
-        onClick={onClose || (() => window.history.back())}
+        onClick={onClose || (() => navigate(-1))}
         className="absolute top-6 right-6 z-50 w-12 h-12 bg-obsidian border border-fantasy-gold/50 flex items-center justify-center
           hover:bg-fantasy-crimson hover:text-white transition-all shadow-fantasy-glow"
       >

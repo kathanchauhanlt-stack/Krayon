@@ -1,5 +1,5 @@
 /**
- * AINIME — Express API Server
+ * Krayon — Express API Server
  * Stack: Express 4 + better-sqlite3 (file-based, zero config)
  * Run: npx tsx server/index.ts
  */
@@ -10,8 +10,11 @@ import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config({ path: ".env.local" });
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH   = path.join(__dirname, "ainime.db");
@@ -301,11 +304,133 @@ app.patch("/api/users/:id", (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
+//  AI PROXIES (GEMINI)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// POST /api/ai/enhance-scene
+app.post("/api/ai/enhance-scene", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: "prompt is required" });
+
+  const systemInstruction =
+    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
+
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `${systemInstruction}\n\n${prompt}`,
+    });
+    res.json({ enhancedText: result.text ?? prompt });
+  } catch (error: any) {
+    console.error("Gemini enhanceScenePrompt error:", error);
+    res.status(500).json({ error: error.message ?? "Gemini error" });
+  }
+});
+
+// POST /api/ai/generate-panels
+app.post("/api/ai/generate-panels", async (req, res) => {
+  const { scene, genre, style, title } = req.body;
+  if (!scene) return res.status(400).json({ error: "scene is required" });
+
+  const systemInstruction = `You are a professional comic book writer. 
+Comic title: "${title || "Untitled"}". Genre: ${genre || "Fantasy"}. Art style: ${style || "American Comic"}.
+Given the scene below, generate exactly 4 panel descriptions for a comic page.
+Format your response as a numbered list:
+1. Panel 1: ...
+2. Panel 2: ...
+3. Panel 3: ...
+4. Panel 4: ...
+Each description should be one sentence describing camera angle, action, and mood. Do NOT add extra text.`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `${systemInstruction}\n\nScene: ${scene}`,
+    });
+
+    const raw = result.text ?? "";
+    const lines = raw
+      .split(/\n/)
+      .map((l) => l.replace(/^\d+\.\s*/u, "").trim())
+      .filter((l) => l.length > 0);
+
+    while (lines.length < 4) {
+      lines.push(`Panel ${lines.length + 1}: The scene continues...`);
+    }
+    res.json({ panels: lines.slice(0, 4) });
+  } catch (error: any) {
+    console.error("Gemini generatePanelDescriptions error:", error);
+    res.status(500).json({ error: error.message ?? "Gemini error" });
+  }
+});
+
+// POST /api/ai/generate-dialogue
+app.post("/api/ai/generate-dialogue", async (req, res) => {
+  const { panelContext, character } = req.body;
+  if (!panelContext || !character) {
+    return res.status(400).json({ error: "panelContext and character are required" });
+  }
+
+  const prompt = `You are writing dialogue for a comic book character.
+Character: ${character}.
+Scene context: ${panelContext}.
+Write ONE single line of dialogue (maximum 12 words) that this character would say. Return ONLY the dialogue text, no quotation marks, no attribution, no explanations.`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    const text = (result.text ?? "").trim().replace(/^["']|["']$/g, "");
+    const words = text.split(/\s+/);
+    res.json({ dialogue: words.slice(0, 12).join(" ") });
+  } catch (error: any) {
+    console.error("Gemini generateDialogue error:", error);
+    res.status(500).json({ error: error.message ?? "Gemini error" });
+  }
+});
+
+// GET /api/ai/stream-scene
+app.get("/api/ai/stream-scene", async (req, res) => {
+  const { prompt } = req.query;
+  if (!prompt || typeof prompt !== "string") {
+    return res.status(400).json({ error: "prompt query param is required" });
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const systemInstruction =
+    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
+
+  try {
+    const stream = await ai.models.generateContentStream({
+      model: "gemini-2.5-flash",
+      contents: `${systemInstruction}\n\n${prompt}`,
+    });
+
+    for await (const chunk of stream) {
+      const text = chunk.text;
+      if (text) {
+        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      }
+    }
+    res.write("data: [DONE]\n\n");
+    res.end();
+  } catch (error) {
+    console.error("Gemini streamSceneEnhancement error:", error);
+    res.write(`data: ${JSON.stringify({ error: "AI Enhancement unavailable" })}\n\n`);
+    res.end();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
 //  HEALTH
 // ══════════════════════════════════════════════════════════════════════════════
 app.get("/api/health", (_req, res) => res.json({ status: "ok", db: DB_PATH }));
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 AINIME API running → http://localhost:${PORT}/api/health`);
+  console.log(`\n🚀 KRAYON API running → http://localhost:${PORT}/api/health`);
   console.log(`📦 Database          → ${DB_PATH}\n`);
 });

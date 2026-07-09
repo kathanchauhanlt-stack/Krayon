@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "motion/react";
 import { Zap, Share2, Search, TrendingUp, Star, Filter, Loader2 } from "lucide-react";
 import { getComics, toggleMana, getMana, type ApiComic } from "../services/api";
-import { useAuth } from "../context/AuthContext";
 
 const FILTERS = ["All", "Trending", "Final", "WIP"];
 
@@ -13,38 +12,27 @@ const BADGE_STYLES: Record<string, string> = {
   "NEW DROP":          "bg-comic-green text-black",
 };
 
-function ComicCard({ comic, index }: { comic: ApiComic; index: number; key?: any }) {
-  const { user: authUser } = useAuth();
+function ComicCard({ comic, index }: { comic: ApiComic; index: number; key?: string }) {
   const [liked, setLiked]       = useState(false);
   const [count, setCount]       = useState(comic.mana_count);
   const [pending, setPending]   = useState(false);
 
   // load liked state for current user
   useEffect(() => {
-    if (!authUser) {
-      setLiked(false);
-      setCount(comic.mana_count);
-      return;
-    }
-    getMana(comic.id, authUser.uid).then(d => { setLiked(d.liked); setCount(d.count); }).catch(() => {});
-  }, [comic.id, authUser, comic.mana_count]);
+    getMana(comic.id).then(d => { setLiked(d.liked); setCount(d.count); }).catch(() => {});
+  }, [comic.id]);
 
   const handleMana = async () => {
     if (pending) return;
-    if (!authUser) {
-      alert("Please Sign In from the top header to like (give mana to) this comic!");
-      return;
-    }
     setPending(true);
     try {
-      const res = await toggleMana(comic.id, authUser.uid);
+      const res = await toggleMana(comic.id);
       setLiked(res.liked);
       setCount(c => res.liked ? c + 1 : c - 1);
     } finally {
       setPending(false);
     }
   };
-
 
   return (
     <motion.div
@@ -145,7 +133,7 @@ export default function Realm() {
   useEffect(() => { load(); }, [load]);
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar bg-obsidian flex flex-col">
+    <div className="h-full flex flex-col bg-obsidian overflow-hidden">
       {/* Header */}
       <div className="relative shrink-0 border-b-4 border-ink bg-obsidian">
         <div className="absolute inset-0 bg-halftone-white opacity-[0.05] pointer-events-none" />
@@ -156,7 +144,7 @@ export default function Realm() {
               THE REALM
             </h1>
             <p className="text-ink font-bold text-xs tracking-[0.1em] uppercase border-t-4 border-ink pt-2 mt-2 max-w-xs">
-              Witness the artifacts published by the high chroniclers of AINIME
+              Witness the artifacts published by the high chroniclers of Krayon
             </p>
           </div>
 
@@ -205,7 +193,7 @@ export default function Realm() {
       </div>
 
       {/* Grid */}
-      <div className="p-8">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
         {loading && (
           <div className="flex items-center justify-center py-32 gap-3">
             <Loader2 size={32} className="text-comic-yellow animate-spin" />

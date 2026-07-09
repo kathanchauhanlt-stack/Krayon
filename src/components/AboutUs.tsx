@@ -14,7 +14,7 @@ const CARDS = [
     id: "realm",
     icon: Compass,
     title: "The Realm",
-    desc: "Explore vast worlds built by fellow creators in the AINIME community.",
+    desc: "Explore vast worlds built by fellow creators in the Krayon community.",
     bg: "#1a9faa",
     accent: "#f8f4e8",
   },
@@ -96,7 +96,7 @@ export default function AboutUs() {
                 }}
               >
                 WELCOME TO<br />
-                <span style={{ color: "#f5c518" }}>AINIME</span>
+                <span style={{ color: "#f5c518" }}>Krayon</span>
               </h1>
             </div>
           </div>

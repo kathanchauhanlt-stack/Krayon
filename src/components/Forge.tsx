@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Plus, Wand2, ArrowRight, Sparkles, X,
   LayoutGrid, Check, ArrowLeft, Zap
