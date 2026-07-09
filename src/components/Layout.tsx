@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, Hammer, User, Library, Zap, Crown, LogIn, LogOut, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import Logo from "./Logo";
 
 const NAV_ITEMS = [
   { id: 'realm',   path: '/realm',   label: 'Realm',   icon: Sparkles, color: "from-[#00F0FF] to-[#0080FF]" },
@@ -49,15 +50,10 @@ export default function Layout() {
           >
             {/* Logo Area */}
             <div 
-              className="flex items-center gap-3 cursor-pointer group"
+              className="flex items-center cursor-pointer group"
               onClick={() => navigate("/")}
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFD700] via-[#FF6B00] to-[#C0392B] flex items-center justify-center border-2 border-[#111] shadow-[2px_2px_0_#111] transition-transform group-hover:scale-105 group-hover:rotate-3">
-                <Crown size={20} className="text-white drop-shadow-md" />
-              </div>
-              <span style={{ fontFamily: "'Bangers',cursive", fontSize: "1.75rem", letterSpacing: "0.12em", WebkitTextStroke: "1px rgba(0,0,0,0.6)", textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }} className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFD700] to-[#FF6B00]">
-                KRAYON
-              </span>
+              <Logo scale={0.4} className="group-hover:scale-105 transition-transform" />
             </div>
 
             {/* Auth Actions & Path */}

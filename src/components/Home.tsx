@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -93,9 +94,7 @@ export default function Home() {
           }}
         >
           <div className="absolute inset-0 rounded-full bg-halftone opacity-25 mix-blend-multiply pointer-events-none" />
-          <span style={{ fontFamily: "'Bangers',cursive", fontSize: "2rem", letterSpacing: "0.12em", color: "#fff", WebkitTextStroke: "1px rgba(0,0,0,0.4)", textShadow: "3px 3px 0 rgba(0,0,0,0.5)", marginTop: 4, lineHeight: 1 }}>
-            KRAYON
-          </span>
+          <Logo scale={0.65} />
           <motion.div
             className="absolute inset-0 rounded-full"
             style={{ border: "4px solid #FFD700" }}
