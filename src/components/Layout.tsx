@@ -1,110 +1,159 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, Hammer, User, Library, Zap, Crown, LogIn, LogOut, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import Logo from "./Logo";
+import { LogIn, LogOut, Loader2, User } from "lucide-react";
 
 const NAV_ITEMS = [
-  { id: 'realm',   path: '/realm',   label: 'Realm',   icon: Sparkles, color: "from-[#00F0FF] to-[#0080FF]" },
-  { id: 'forge',   path: '/forge',   label: 'Forge',   icon: Hammer,   color: "from-[#FF6B00] to-[#FF3D00]" },
-  { id: 'vault',   path: '/vault',   label: 'Vault',   icon: Library,  color: "from-[#FFD700] to-[#FF8C00]" },
-  { id: 'guild',   path: '/guild',   label: 'Guild',   icon: User,     color: "from-[#10B981] to-[#047857]" },
-  { id: 'visions', path: '/visions', label: 'Visions', icon: Zap,      color: "from-[#B026FF] to-[#6A00FF]" },
+  { id: "stream",  path: "/stream",  icon: "play_circle",  label: "STREAM"  },
+  { id: "studio",  path: "/studio",  icon: "edit_note",    label: "STUDIO"  },
+  { id: "reader",  path: "/reader",  icon: "menu_book",    label: "READER"  },
+  { id: "vault",   path: "/vault",   icon: "inventory_2",  label: "VAULT"   },
+  { id: "profile", path: "/profile", icon: "person",       label: "PROFILE" },
 ];
 
+// Comic-burst header background (public CDN)
+const HEADER_BG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuBTCHkvfOmGepfYCCAbAWysxEaYAB2I-LJ2iSr9E39SrEseQ1tszc7ckyMTDCC7MsGEBkQIS5Mcy_F_OZOQMmAapmFUIJ9z5FZatEfKqZXf2b0zT76_SpqVKe1tNchBvSlPYDP9yePmLfQbsM-UNFYl11-jL4tuKzcYId7ftN5PrIYv6fwxRGRhaz-Kb4UFOiFkaK6RUIQm4ZQAUM5mAB2hkuh5eGifXfRtLtGDGrehmyoiw1AeBQjtIIXPgZyY2JMVRw";
+const NAV_BG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuC9uScC6OcWnWQKXODGnk_IjlW9t8zgCvhOs379_gZhHz_by3lZ_zCDZ8LGpKm21WlkmrAmde8tpQabcHaaW3v0kg4lqwnbJ41IMBaKu-_2asUaEKACxkTgDpGs90ZeqxcFaF5EQcxuPQNgn8RXExM9aIcC5ayxJYmhIjcIiCfjWixh49lfd3xmZaU5Lky8HwLm3n_Vax11h62KcPbWRL9C7IRTOVP8V-oub7OfM0ObpZ35Qh66HMp2hXNhoghgG4p9pA";
+
 export default function Layout() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate  = useNavigate();
+  const location  = useLocation();
   const { user, profile, loading, signInWithGoogle, signInAnonymously, logout } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const isInit = location.pathname === "/";
-  const isAbout = location.pathname === "/about";
-  const showDock = !isInit && !isAbout;
+  const isInit  = location.pathname === "/";
+  const showUI  = !isInit;
+
+  const activeNav = NAV_ITEMS.find(
+    (n) => location.pathname === n.path || location.pathname.startsWith(n.path + "/")
+  );
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#0a1014] text-[#f8f4e8] overflow-hidden" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-      
-      {/* ── GLOBAL HALFTONE & FILM GRAIN ── */}
-      <div className="fixed inset-0 pointer-events-none z-[2] bg-halftone opacity-[0.18]" />
+    <div className="flex flex-col h-screen w-full overflow-hidden" style={{ background: "#111317", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+
+      {/* ── FILM GRAIN ── */}
       <div
-        className="fixed inset-0 pointer-events-none z-[999] opacity-[0.03] mix-blend-overlay"
+        className="fixed inset-0 pointer-events-none z-[999] opacity-[0.025] mix-blend-overlay"
         style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
       />
 
-      {/* ── HEADER ── */}
+      {/* ── TOP HEADER ── */}
       <AnimatePresence>
-        {showDock && (
+        {showUI && (
           <motion.header
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0,   opacity: 1 }}
-            exit={{    y: -80, opacity: 0 }}
+            initial={{ y: -96, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -96, opacity: 0 }}
             transition={{ type: "spring", stiffness: 240, damping: 26 }}
-            className="flex items-center justify-between px-6 py-4 z-[200] relative border-b border-[#111]"
+            className="relative flex items-center justify-between w-full z-[200] flex-shrink-0 overflow-hidden"
             style={{
-              background: "linear-gradient(to bottom, rgba(10,16,20,0.95), rgba(10,16,20,0.8))",
-              backdropFilter: "blur(12px)",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+              height: "100px",
+              borderBottom: "4px solid #000",
+              boxShadow: "0 4px 0 0 #000, 0 8px 32px rgba(0,0,0,0.7)",
+              background: "#0c0e12",
             }}
           >
-            {/* Logo Area */}
-            <div 
-              className="flex items-center cursor-pointer group"
-              onClick={() => navigate("/")}
-            >
-              <Logo scale={0.4} className="group-hover:scale-105 transition-transform" />
-            </div>
+            {/* Comic burst texture — crisp, saturated, no blur */}
+            <img
+              src={HEADER_BG}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              style={{ opacity: 0.22, filter: "saturate(2) contrast(1.3) brightness(1.4)" }}
+            />
+            {/* Cyan left-edge accent bar */}
+            <div
+              className="absolute left-0 top-0 bottom-0 pointer-events-none"
+              style={{ width: 4, background: "linear-gradient(to bottom, #c3f5ff, #00daf3)" }}
+            />
 
-            {/* Auth Actions & Path */}
-            <div className="flex items-center gap-4">
-              <span className="font-bold text-sm tracking-widest uppercase opacity-75 hidden sm:inline border-r border-white/10 pr-4">
-                {location.pathname.substring(1) || 'Nexus'}
-              </span>
+            <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-4 md:px-6 flex justify-between items-center">
+              {/* Logo */}
+              <button
+                onClick={() => navigate("/")}
+                className="select-none"
+                style={{
+                  fontFamily: "'Anybody', sans-serif",
+                  fontWeight: 900,
+                  fontSize: "clamp(28px, 4vw, 38px)",
+                  letterSpacing: "-0.05em",
+                  lineHeight: 1,
+                  color: "#c3f5ff",
+                  textShadow: "0 0 20px rgba(195,245,255,0.5), 2px 3px 0 rgba(0,0,0,1), 0 0 40px rgba(0,218,243,0.3)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  textTransform: "uppercase",
+                }}
+              >
+                KRAYON
+              </button>
 
-              {loading ? (
-                <Loader2 size={20} className="animate-spin text-comic-yellow" />
-              ) : user ? (
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-[#111] border border-white/15 px-3 py-1.5 rounded-xl">
-                    {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt="avatar" className="w-6 h-6 rounded-full border border-white/10" referrerPolicy="no-referrer" />
-                    ) : (
-                      <User size={14} className="text-comic-orange" />
-                    )}
-                    <span className="text-xs font-bold font-mono tracking-wider max-w-[100px] truncate">
-                      {profile?.username || "Guest"}
-                    </span>
+              {/* Right actions */}
+              <div className="flex items-center gap-3">
+                {loading ? (
+                  <Loader2 size={20} className="animate-spin text-[#c3f5ff]" />
+                ) : user ? (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-[#1e2024] border border-[#3b494c]/50 px-3 py-1.5 rounded-xl">
+                      {profile?.avatar_url ? (
+                        <img src={profile.avatar_url} alt="avatar" className="w-6 h-6 rounded-full" referrerPolicy="no-referrer" />
+                      ) : (
+                        <User size={14} className="text-[#c3f5ff]" />
+                      )}
+                      <span className="text-xs font-bold font-mono tracking-wider text-[#e2e2e8] max-w-[100px] truncate">
+                        {profile?.username || "Guest"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className="p-2 rounded-xl text-[#bac9cc] hover:text-[#ffb1c3] hover:bg-[#1e2024] transition-all cursor-pointer"
+                      title="Sign Out"
+                      style={{ background: "none", border: "none" }}
+                    >
+                      <LogOut size={18} />
+                    </button>
                   </div>
+                ) : (
                   <button
-                    onClick={logout}
-                    className="p-2 rounded-xl hover:bg-comic-red/10 border border-transparent hover:border-comic-red/20 text-white/60 hover:text-comic-red transition-all cursor-pointer"
-                    title="Sign Out"
+                    onClick={() => setShowLoginModal(true)}
+                    className="flex items-center gap-2 bg-[#c3f5ff] text-[#00363d] px-4 py-2 rounded-xl font-bold text-xs uppercase hover:bg-[#9cf0ff] transition-all cursor-pointer"
+                    style={{ border: "none", boxShadow: "2px 2px 0 #000" }}
                   >
-                    <LogOut size={18} />
+                    <LogIn size={14} /> Sign In
                   </button>
-                </div>
-              ) : (
+                )}
+
                 <button
-                  onClick={() => setShowLoginModal(true)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#FF3D00] text-white px-4 py-2 rounded-xl border border-black shadow-[2px_2px_0_#000] font-bold text-xs uppercase hover:translate-y-px hover:shadow-none transition-all cursor-pointer"
+                  className="hover:scale-110 transition-transform"
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#c3f5ff", filter: "drop-shadow(0 0 6px rgba(195,245,255,0.5)) drop-shadow(2px 2px 0 rgba(0,0,0,0.8))" }}
+                  title="Notifications"
                 >
-                  <LogIn size={14} /> Sign In
+                  <span className="material-symbols-outlined" style={{ fontSize: 28, fontVariationSettings: "'wght' 600" }}>notifications</span>
                 </button>
-              )}
+                <button
+                  className="hover:scale-110 transition-transform"
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#c3f5ff", filter: "drop-shadow(0 0 6px rgba(195,245,255,0.5)) drop-shadow(2px 2px 0 rgba(0,0,0,0.8))" }}
+                  title="Search"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: 28, fontVariationSettings: "'wght' 600" }}>search</span>
+                </button>
+              </div>
             </div>
           </motion.header>
         )}
       </AnimatePresence>
 
-      {/* ── AUTH MODAL OVERLAY ── */}
+      {/* ── AUTH MODAL ── */}
       <AnimatePresence>
         {showLoginModal && (
           <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowLoginModal(false)}
               className="absolute inset-0 bg-black/75 backdrop-blur-sm"
             />
@@ -112,33 +161,35 @@ export default function Layout() {
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
-              className="relative w-full max-w-sm bg-[#111820] border-4 border-black p-8 shadow-[8px_8px_0_#000] z-10 flex flex-col gap-6 text-center text-[#f8f4e8]"
+              className="relative w-full max-w-sm p-8 z-10 flex flex-col gap-6 text-center"
+              style={{
+                background: "#1e2024",
+                border: "1px solid #3b494c",
+                borderRadius: "1rem",
+                boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+              }}
             >
               <div>
-                <h3 className="text-3xl font-comic text-comic-yellow tracking-wider text-shadow-comic leading-none mb-2">
+                <h3 className="text-2xl font-display text-[#c3f5ff] tracking-tight uppercase leading-none mb-2" style={{ fontWeight: 900 }}>
                   ENTER THE SANCTUM
                 </h3>
-                <p className="text-xs uppercase font-bold tracking-widest text-[#f8f4e8]/60">
+                <p className="text-xs uppercase font-bold tracking-widest text-[#bac9cc]">
                   Choose your path to start forging
                 </p>
               </div>
 
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={async () => {
-                    await signInWithGoogle();
-                    setShowLoginModal(false);
-                  }}
-                  className="w-full bg-[#EA4335] text-white border-4 border-black py-3 rounded-xl font-comic uppercase tracking-wider text-sm shadow-[4px_4px_0_#000] hover:translate-y-px hover:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                  onClick={async () => { await signInWithGoogle(); setShowLoginModal(false); }}
+                  className="w-full text-white py-3 rounded-xl font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:opacity-90"
+                  style={{ background: "#EA4335", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 4px 12px rgba(234,67,53,0.3)" }}
                 >
                   Sign In with Google
                 </button>
                 <button
-                  onClick={async () => {
-                    await signInAnonymously();
-                    setShowLoginModal(false);
-                  }}
-                  className="w-full bg-comic-teal text-[#111] border-4 border-black py-3 rounded-xl font-comic uppercase tracking-wider text-sm shadow-[4px_4px_0_#000] hover:translate-y-px hover:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                  onClick={async () => { await signInAnonymously(); setShowLoginModal(false); }}
+                  className="w-full py-3 rounded-xl font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:opacity-90"
+                  style={{ background: "#c3f5ff", color: "#00363d", border: "none", boxShadow: "0 4px 12px rgba(195,245,255,0.2)" }}
                 >
                   Enter as Guest
                 </button>
@@ -146,7 +197,8 @@ export default function Layout() {
 
               <button
                 onClick={() => setShowLoginModal(false)}
-                className="text-xs uppercase font-bold tracking-widest text-white/40 hover:text-white transition-colors cursor-pointer"
+                className="text-xs uppercase font-bold tracking-widest text-[#bac9cc] hover:text-[#e2e2e8] transition-colors cursor-pointer"
+                style={{ background: "none", border: "none" }}
               >
                 Cancel
               </button>
@@ -155,16 +207,15 @@ export default function Layout() {
         )}
       </AnimatePresence>
 
-
-      {/* ── MAIN CONTENT OUTLET ── */}
-      <main className="flex-1 relative overflow-hidden z-[10] flex flex-col">
+      {/* ── MAIN CONTENT ── */}
+      <main className="flex-1 relative overflow-hidden z-[10]">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="w-full h-full overflow-y-auto custom-scrollbar"
           >
             <Outlet />
@@ -172,52 +223,92 @@ export default function Layout() {
         </AnimatePresence>
       </main>
 
-      {/* ── DOCK NAVIGATION ── */}
+      {/* ── FLOATING BOTTOM NAV ── */}
       <AnimatePresence>
-        {showDock && (
-          <motion.nav
+        {showUI && (
+          <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 24 }}
-            className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[200] px-2 sm:px-4 py-2 w-[95vw] sm:w-auto flex justify-center"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200]"
           >
-            <div className="flex items-center justify-between sm:justify-center gap-2 sm:gap-4 bg-[#111820]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl w-full sm:w-auto">
-              {NAV_ITEMS.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => navigate(item.path)}
-                    className="relative group flex flex-col items-center justify-center w-16 h-14 rounded-xl transition-all duration-300"
-                  >
-                    {/* Background Active State */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="active-dock-bg"
-                        className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.color} opacity-20`}
-                        initial={false}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
-                    
-                    <div className={`relative z-10 transition-colors duration-300 ${isActive ? "text-white" : "text-white/40 group-hover:text-white/80"}`}>
-                      <item.icon size={22} className={isActive ? "drop-shadow-[0_0_8px_currentColor]" : ""} />
-                    </div>
-                    
-                    {isActive && (
-                      <motion.div
-                        layoutId="active-dock-indicator"
-                        className={`absolute -bottom-1 w-8 h-1 rounded-full bg-gradient-to-r ${item.color}`}
-                        initial={false}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.nav>
+            <nav
+              className="relative flex items-center justify-center px-4 py-3 overflow-hidden"
+              style={{
+                borderRadius: 9999,
+                border: "2px solid #000",
+                boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)",
+                background: "#111317",
+              }}
+            >
+              {/* Comic burst texture */}
+              <img
+                src={NAV_BG}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                style={{ mixBlendMode: "screen", opacity: 0.7 }}
+              />
+
+              {/* Nav items */}
+              <div
+                className="relative z-10 flex items-center gap-1"
+                style={{
+                  background: "rgba(28, 30, 34, 0.95)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 9999,
+                  padding: "6px 8px",
+                  border: "1px solid rgba(0,0,0,0.8)",
+                }}
+              >
+                {NAV_ITEMS.map((item) => {
+                  const isActive = activeNav?.id === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => navigate(item.path)}
+                      title={item.label}
+                      className="flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer"
+                      style={{
+                        padding: "10px 14px",
+                        borderRadius: isActive ? "1rem" : 9999,
+                        background: isActive ? "#f5cd00" : "transparent",
+                        color: isActive ? "#3a3000" : "#bac9cc",
+                        border: isActive ? "2px solid #000" : "2px solid transparent",
+                        boxShadow: isActive ? "2px 2px 0px 0px rgba(0,0,0,1)" : "none",
+                        transition: "all 0.2s ease",
+                        minWidth: 56,
+                      }}
+                    >
+                      <span
+                        className="material-symbols-outlined"
+                        style={{
+                          fontSize: 22,
+                          fontVariationSettings: isActive ? "'FILL' 1, 'wght' 600" : "'FILL' 0, 'wght' 400",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {item.icon}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "'Space Mono', monospace",
+                          fontSize: 8,
+                          fontWeight: 700,
+                          letterSpacing: "0.06em",
+                          lineHeight: 1,
+                          opacity: isActive ? 1 : 0.75,
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

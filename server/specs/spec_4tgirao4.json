@@ -1,0 +1,72 @@
+{
+  "id": "spec_4tgirao4",
+  "title": "Neon Ronin",
+  "genre": "Cyberpunk",
+  "style": "Manga",
+  "prompt": "Ryuu is the last samurai in Neo-Tokyo 2147. UNIT-7 a rogue AI robot has begun hunting him. Ryuu must stop the robot before it destroys the city data core.\n\nMain characters: Ryuu (stoic samurai hero), UNIT-7 (cold robotic villain), Kira (young hacker ally)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:07:23.773Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide shot: Neo-Tokyo cityscape at dusk, Ryuu walks alone",
+          "caption": "Three days earlier...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Wide%20shot%3A%20Neo-Tokyo%20cityscape%20at%20dusk%2C%20Ryuu%20walks%20alone%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=66303"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up: Kira hacks into mainframe, looks up at Ryuu entering the room",
+          "caption": null,
+          "dialogue": "Ryuu, I've accessed UNIT-7's plans.",
+          "bubbles": [
+            {
+              "character": "Kira",
+              "type": "speech",
+              "text": "Ryuu, I've accessed UNIT-7's plans."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Close-up%3A%20Kira%20hacks%20into%20mainframe%2C%20looks%20up%20at%20Ryuu%20entering%20the%20room%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=66304"
+        },
+        {
+          "order": 2,
+          "scene_description": "Overhead view: UNIT-7 robotic form revealed, cold blue lights, city map behind",
+          "caption": null,
+          "dialogue": "Neo-Tokyo will soon be mine.",
+          "bubbles": [
+            {
+              "character": "UNIT-7",
+              "type": "speech",
+              "text": "Neo-Tokyo will soon be mine."
+            }
+          ],
+          "sfx": "HUMMM",
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Overhead%20view%3A%20UNIT-7%20robotic%20form%20revealed%2C%20cold%20blue%20lights%2C%20city%20map%20behind%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=66305"
+        },
+        {
+          "order": 3,
+          "scene_description": "Medium shot: Ryuu draws katana, determined look, city neon lights reflecting on blade",
+          "caption": "The hunt begins.",
+          "dialogue": "I will stop you, UNIT-7.",
+          "bubbles": [
+            {
+              "character": "Ryuu",
+              "type": "thought",
+              "text": "I will stop you, UNIT-7."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Medium%20shot%3A%20Ryuu%20draws%20katana%2C%20determined%20look%2C%20city%20neon%20lights%20reflecting%20on%20blade%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=66306"
+        }
+      ]
+    }
+  ]
+}

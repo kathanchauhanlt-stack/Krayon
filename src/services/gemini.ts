@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+const BASE = import.meta.env.VITE_API_URL ?? "";
 
 /**
  * Takes user's raw scene description and returns an AI-enhanced, more vivid version.

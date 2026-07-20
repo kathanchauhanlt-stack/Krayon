@@ -1,0 +1,46 @@
+{
+  "id": "spec_s70jnrwn",
+  "title": "hulk vs spiderman",
+  "genre": "Fantasy",
+  "style": "American Comic",
+  "prompt": "hulk and spiderman are disccusing fight scene and they are fighting the thanos and they currently injured and hul;k is still smashing and making big imapcat so make a comic book based on this thing",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-13T23:24:00.057Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: hulk and spiderman are disccusing fight scene and they are fighting the thanos and they currently injured and hul;k is still smashing and making big imapcat so make a comic book based on this thing — Fantasy atmosphere, American Comic art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Wide%20establishing%20shot%3A%20hulk%20and%20spiderman%20are%20disccusing%20fight%20scene%20and%20they%20are%20fighting%20the%20thanos%20and%20they%20currently%20injured%20and%20hul%3Bk%20is%20still%20smashing%20and%20making%20big%20imapcat%20so%20make%20a%20comic%20book%20based%20on%20this%20thing%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=12422"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: hulk and spiderman are disccusing fight scene and they are fighting the thanos and they currently injured and hul;k is still smashing and making big imapcat so make a comic book based on this thing — Fantasy atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Close-up%20shot%3A%20hulk%20and%20spiderman%20are%20disccusing%20fight%20scene%20and%20they%20are%20fighting%20the%20thanos%20and%20they%20currently%20injured%20and%20hul%3Bk%20is%20still%20smashing%20and%20making%20big%20imapcat%20so%20make%20a%20comic%20book%20based%20on%20this%20thing%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=12423"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: hulk and spiderman are disccusing fight scene and they are fighting the thanos and they currently injured and hul;k is still smashing and making big imapcat so make a comic book based on this thing — Fantasy atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Medium%20shot%3A%20hulk%20and%20spiderman%20are%20disccusing%20fight%20scene%20and%20they%20are%20fighting%20the%20thanos%20and%20they%20currently%20injured%20and%20hul%3Bk%20is%20still%20smashing%20and%20making%20big%20imapcat%20so%20make%20a%20comic%20book%20based%20on%20this%20thing%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=12424"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: hulk and spiderman are disccusing fight scene and they are fighting the thanos and they currently injured and hul;k is still smashing and making big imapcat so make a comic book based on this thing — Fantasy atmosphere, American Comic art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Over-the-shoulder%20shot%3A%20hulk%20and%20spiderman%20are%20disccusing%20fight%20scene%20and%20they%20are%20fighting%20the%20thanos%20and%20they%20currently%20injured%20and%20hul%3Bk%20is%20still%20smashing%20and%20making%20big%20imapcat%20so%20make%20a%20comic%20book%20based%20on%20this%20thing%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=12425"
+        }
+      ]
+    }
+  ]
+}

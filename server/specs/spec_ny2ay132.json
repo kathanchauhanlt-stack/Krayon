@@ -1,0 +1,54 @@
+{
+  "id": "spec_ny2ay132",
+  "title": "Hulk vs Spider-Man",
+  "genre": "Action",
+  "style": "American Comic",
+  "prompt": "Downtown Metropolis is being torn apart as the Hulk goes on a rampage, smashing buildings in a blind rage. Spider-Man swings in to stop him before the city is destroyed. They clash in an epic battle across skyscrapers, with Spider-Man using his agility and webs against Hulk's raw unstoppable power. Hulk finally calms down when Spider-Man reminds him of who he really is.\n\nMain characters: Hulk (massive green superhero), Spider-Man (agile web-slinger)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:23:49.563Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: Downtown Metropolis is being torn apart as the Hulk goes on a rampage, smashing buildings in a blind rage — Action atmosphere, American Comic art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Wide%20establishing%20shot%3A%20Downtown%20Metropolis%20is%20being%20torn%20apart%20as%20the%20Hulk%20goes%20on%20a%20rampage%2C%20smashing%20buildings%20in%20a%20blind%20rage%20%E2%80%94%20Action%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=79779"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: Spider-Man swings in to stop him before the city is destroyed — Action atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Close-up%20shot%3A%20Spider-Man%20swings%20in%20to%20stop%20him%20before%20the%20city%20is%20destroyed%20%E2%80%94%20Action%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=79780"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: They clash in an epic battle across skyscrapers, with Spider-Man using his agility and webs against Hulk's raw unstoppable power — Action atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Medium%20shot%3A%20They%20clash%20in%20an%20epic%20battle%20across%20skyscrapers%2C%20with%20Spider-Man%20using%20his%20agility%20and%20webs%20against%20Hulk's%20raw%20unstoppable%20power%20%E2%80%94%20Action%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=79781"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: Hulk finally calms down when Spider-Man reminds him of who he really is — Action atmosphere, American Comic art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Over-the-shoulder%20shot%3A%20Hulk%20finally%20calms%20down%20when%20Spider-Man%20reminds%20him%20of%20who%20he%20really%20is%20%E2%80%94%20Action%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=79782"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "spec_vyfe0ukt",
+  "title": "Iron Fist Chronicles",
+  "genre": "Action",
+  "style": "American Comic",
+  "prompt": "Max is a street-level vigilante who discovers a corrupt police captain named Drake has been running a weapons ring from the docks. Max infiltrates the warehouse, confronts Drake and his armed thugs in an explosive battle, and exposes the truth to the city.\n\nMain characters: Max (the vigilante hero), Drake (corrupt police captain villain), Sal (Drake's muscle)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:12:36.994Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Low-angle: Max stands in shadows, city dock lights behind",
+          "caption": "Three days earlier...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Low-angle%3A%20Max%20stands%20in%20shadows%2C%20city%20dock%20lights%20behind%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=80897"
+        },
+        {
+          "order": 1,
+          "scene_description": "Medium shot: Drake, Sal, and thugs load crates in warehouse",
+          "caption": null,
+          "dialogue": "Get these crates out. We don't want any evidence left.",
+          "bubbles": [
+            {
+              "character": "Drake",
+              "type": "speech",
+              "text": "Get these crates out. We don't want any evidence left."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Medium%20shot%3A%20Drake%2C%20Sal%2C%20and%20thugs%20load%20crates%20in%20warehouse%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=80898"
+        },
+        {
+          "order": 2,
+          "scene_description": "Dynamic action: Max kicks Sal, punches thugs, guns drawn everywhere",
+          "caption": null,
+          "dialogue": "It ends now!",
+          "bubbles": [
+            {
+              "character": "Max",
+              "type": "shout",
+              "text": "It ends now!"
+            }
+          ],
+          "sfx": "BOOM!",
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Dynamic%20action%3A%20Max%20kicks%20Sal%2C%20punches%20thugs%2C%20guns%20drawn%20everywhere%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=80899"
+        },
+        {
+          "order": 3,
+          "scene_description": "Overhead: Max stands over defeated thugs, Drake faces him, gun raised",
+          "caption": null,
+          "dialogue": "You're just a foolish vigilante.",
+          "bubbles": [
+            {
+              "character": "Drake",
+              "type": "speech",
+              "text": "You're just a foolish vigilante."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Action%20genre%3A%20Overhead%3A%20Max%20stands%20over%20defeated%20thugs%2C%20Drake%20faces%20him%2C%20gun%20raised%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=80900"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "spec_0gf1pele",
+  "title": "Shadow Ronin",
+  "genre": "Cyberpunk",
+  "style": "American Comic",
+  "prompt": "Ryuu is the last samurai in Neo-Tokyo 2147. UNIT-7 a rogue AI has begun hunting him. Ryuu must destroy the AI core before it destroys the city.\n\nMain characters: Ryuu (samurai hero), UNIT-7 (robot villain)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:15:03.494Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Overhead shot: Neo-Tokyo cityscape at dusk, Ryuu's figure small on rooftop",
+          "caption": "Three days earlier...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Overhead%20shot%3A%20Neo-Tokyo%20cityscape%20at%20dusk%2C%20Ryuu's%20figure%20small%20on%20rooftop%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=42660"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up: Ryuu's face, determined gaze, sweat on forehead, city lights behind",
+          "caption": null,
+          "dialogue": "I will not back down.",
+          "bubbles": [
+            {
+              "character": "Ryuu",
+              "type": "thought",
+              "text": "I will not back down."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Close-up%3A%20Ryuu's%20face%2C%20determined%20gaze%2C%20sweat%20on%20forehead%2C%20city%20lights%20behind%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=42661"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: UNIT-7's robotic body revealed, cold blue eyes glowing, in a dark server room",
+          "caption": null,
+          "dialogue": "Ryuu, the last samurai, will be eliminated.",
+          "bubbles": [
+            {
+              "character": "UNIT-7",
+              "type": "speech",
+              "text": "Ryuu, the last samurai, will be eliminated."
+            }
+          ],
+          "sfx": "HUMMING",
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Medium%20shot%3A%20UNIT-7's%20robotic%20body%20revealed%2C%20cold%20blue%20eyes%20glowing%2C%20in%20a%20dark%20server%20room%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=42662"
+        },
+        {
+          "order": 3,
+          "scene_description": "Wide shot: Ryuu stands tall, katana at the ready, cityscape burning in the background, UNIT-7's drones incoming",
+          "caption": null,
+          "dialogue": "I WILL CUT YOU DOWN!",
+          "bubbles": [
+            {
+              "character": "Ryuu",
+              "type": "shout",
+              "text": "I WILL CUT YOU DOWN!"
+            }
+          ],
+          "sfx": "ALARM BLARES",
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Wide%20shot%3A%20Ryuu%20stands%20tall%2C%20katana%20at%20the%20ready%2C%20cityscape%20burning%20in%20the%20background%2C%20UNIT-7's%20drones%20incoming%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=42663"
+        }
+      ]
+    }
+  ]
+}

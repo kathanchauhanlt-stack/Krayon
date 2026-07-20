@@ -1,0 +1,46 @@
+{
+  "id": "spec_1dhguhs7",
+  "title": "SPIDERMAN AND GWEN",
+  "genre": "Fantasy",
+  "style": "American Comic",
+  "prompt": "SPIDERMAN AND GWEN LOVE STORY IN WHICH THEY HAVE LOT OF TORUBLES AS GWEN GAVE BIRTH TO SPIDERBOY AND HE IS FIGHTING WITH SOME VILLAIN AND SPIDERMNA IS TRAINING",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-13T23:18:34.133Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: SPIDERMAN AND GWEN LOVE STORY IN WHICH THEY HAVE LOT OF TORUBLES AS GWEN GAVE BIRTH TO SPIDERBOY AND HE IS FIGHTING WITH SOME VILLAIN AND SPIDERMNA IS TRAINING — Fantasy atmosphere, American Comic art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Wide%20establishing%20shot%3A%20SPIDERMAN%20AND%20GWEN%20LOVE%20STORY%20IN%20WHICH%20THEY%20HAVE%20LOT%20OF%20TORUBLES%20AS%20GWEN%20GAVE%20BIRTH%20TO%20SPIDERBOY%20AND%20HE%20IS%20FIGHTING%20WITH%20SOME%20VILLAIN%20AND%20SPIDERMNA%20IS%20TRAINING%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=84712"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: SPIDERMAN AND GWEN LOVE STORY IN WHICH THEY HAVE LOT OF TORUBLES AS GWEN GAVE BIRTH TO SPIDERBOY AND HE IS FIGHTING WITH SOME VILLAIN AND SPIDERMNA IS TRAINING — Fantasy atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Close-up%20shot%3A%20SPIDERMAN%20AND%20GWEN%20LOVE%20STORY%20IN%20WHICH%20THEY%20HAVE%20LOT%20OF%20TORUBLES%20AS%20GWEN%20GAVE%20BIRTH%20TO%20SPIDERBOY%20AND%20HE%20IS%20FIGHTING%20WITH%20SOME%20VILLAIN%20AND%20SPIDERMNA%20IS%20TRAINING%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=84713"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: SPIDERMAN AND GWEN LOVE STORY IN WHICH THEY HAVE LOT OF TORUBLES AS GWEN GAVE BIRTH TO SPIDERBOY AND HE IS FIGHTING WITH SOME VILLAIN AND SPIDERMNA IS TRAINING — Fantasy atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Medium%20shot%3A%20SPIDERMAN%20AND%20GWEN%20LOVE%20STORY%20IN%20WHICH%20THEY%20HAVE%20LOT%20OF%20TORUBLES%20AS%20GWEN%20GAVE%20BIRTH%20TO%20SPIDERBOY%20AND%20HE%20IS%20FIGHTING%20WITH%20SOME%20VILLAIN%20AND%20SPIDERMNA%20IS%20TRAINING%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=84714"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: SPIDERMAN AND GWEN LOVE STORY IN WHICH THEY HAVE LOT OF TORUBLES AS GWEN GAVE BIRTH TO SPIDERBOY AND HE IS FIGHTING WITH SOME VILLAIN AND SPIDERMNA IS TRAINING — Fantasy atmosphere, American Comic art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Over-the-shoulder%20shot%3A%20SPIDERMAN%20AND%20GWEN%20LOVE%20STORY%20IN%20WHICH%20THEY%20HAVE%20LOT%20OF%20TORUBLES%20AS%20GWEN%20GAVE%20BIRTH%20TO%20SPIDERBOY%20AND%20HE%20IS%20FIGHTING%20WITH%20SOME%20VILLAIN%20AND%20SPIDERMNA%20IS%20TRAINING%20%E2%80%94%20Fantasy%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=84715"
+        }
+      ]
+    }
+  ]
+}

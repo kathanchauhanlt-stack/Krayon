@@ -1,0 +1,54 @@
+{
+  "id": "spec_4m2nk8gr",
+  "title": "Shadow Ronin",
+  "genre": "Cyberpunk",
+  "style": "American Comic",
+  "prompt": "Ryuu is the last samurai in Neo-Tokyo 2147. UNIT-7 a rogue AI has begun hunting him. Ryuu must destroy the AI core before it destroys the city.\n\nMain characters: Ryuu (samurai hero), UNIT-7 (robot villain)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:13:54.425Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: Ryuu is the last samurai in Neo-Tokyo 2147 — Cyberpunk atmosphere, American Comic art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Wide%20establishing%20shot%3A%20Ryuu%20is%20the%20last%20samurai%20in%20Neo-Tokyo%202147%20%E2%80%94%20Cyberpunk%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=21207"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: UNIT-7 a rogue AI has begun hunting him — Cyberpunk atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Close-up%20shot%3A%20UNIT-7%20a%20rogue%20AI%20has%20begun%20hunting%20him%20%E2%80%94%20Cyberpunk%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=21208"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: Ryuu must destroy the AI core before it destroys the city — Cyberpunk atmosphere, American Comic art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Medium%20shot%3A%20Ryuu%20must%20destroy%20the%20AI%20core%20before%20it%20destroys%20the%20city%20%E2%80%94%20Cyberpunk%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=21209"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: Main characters: Ryuu (samurai hero), UNIT-7 (robot villain) — Cyberpunk atmosphere, American Comic art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Over-the-shoulder%20shot%3A%20Main%20characters%3A%20Ryuu%20(samurai%20hero)%2C%20UNIT-7%20(robot%20villain)%20%E2%80%94%20Cyberpunk%20atmosphere%2C%20American%20Comic%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=21210"
+        }
+      ]
+    }
+  ]
+}

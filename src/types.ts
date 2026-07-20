@@ -17,4 +17,4 @@ export interface Comic {
   badge:      string;
 }
 
-export type Pillar = 'init' | 'about' | 'realm' | 'forge' | 'guild' | 'vault' | 'visions';
+export type Pillar = 'stream' | 'studio' | 'vault' | 'profile';

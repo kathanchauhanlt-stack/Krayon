@@ -1,0 +1,46 @@
+{
+  "id": "spec_sihun7sx",
+  "title": "Iron Phoenix Rising",
+  "genre": "Action",
+  "style": "Manga",
+  "prompt": "A battle-scarred warrior named Phoenix rises from the ashes of a destroyed city. She wields twin blades made of fire and shadow. Three elite soldiers corner her in a ruined plaza. She unleashes her power and defeats them all in a single devastating strike.",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-13T23:15:08.499Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: A battle-scarred warrior named Phoenix rises from the ashes of a destroyed city — Action atmosphere, Manga art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Action%20genre%3A%20Wide%20establishing%20shot%3A%20A%20battle-scarred%20warrior%20named%20Phoenix%20rises%20from%20the%20ashes%20of%20a%20destroyed%20city%20%E2%80%94%20Action%20atmosphere%2C%20Manga%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=93566"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: She wields twin blades made of fire and shadow — Action atmosphere, Manga art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Action%20genre%3A%20Close-up%20shot%3A%20She%20wields%20twin%20blades%20made%20of%20fire%20and%20shadow%20%E2%80%94%20Action%20atmosphere%2C%20Manga%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=93567"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: Three elite soldiers corner her in a ruined plaza — Action atmosphere, Manga art style",
+          "caption": null,
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Action%20genre%3A%20Medium%20shot%3A%20Three%20elite%20soldiers%20corner%20her%20in%20a%20ruined%20plaza%20%E2%80%94%20Action%20atmosphere%2C%20Manga%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=93568"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: She unleashes her power and defeats them all in a single devastating strike. — Action atmosphere, Manga art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Action%20genre%3A%20Over-the-shoulder%20shot%3A%20She%20unleashes%20her%20power%20and%20defeats%20them%20all%20in%20a%20single%20devastating%20strike.%20%E2%80%94%20Action%20atmosphere%2C%20Manga%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=93569"
+        }
+      ]
+    }
+  ]
+}

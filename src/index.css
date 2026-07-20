@@ -1,104 +1,146 @@
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Cinzel", serif;
-  --font-fantasy: "Cinzel", serif;
-  --font-comic: "Bangers", cursive;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  /* ── Font families ── */
+  --font-sans:       "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display:    "Anybody", ui-sans-serif, sans-serif;
+  --font-mono:       "Space Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Core palette from comic explosion images */
-  --color-obsidian: #0d0d0f;
-  --color-comic-teal:   #1a9faa;
-  --color-comic-teal-dark: #0d6b73;
-  --color-comic-orange: #f47c20;
-  --color-comic-orange-dark: #c45a00;
-  --color-comic-red:    #c0392b;
-  --color-comic-red-dark: #8c1a12;
-  --color-comic-yellow: #f5c518;
-  --color-comic-yellow-light: #fde96e;
-  --color-comic-white:  #f8f4e8;
-  --color-ink:          #111111;
+  /* ── M3 Dark Color Palette ── */
+  --color-background:              #111317;
+  --color-surface:                 #111317;
+  --color-surface-dim:             #111317;
+  --color-surface-bright:          #37393e;
+  --color-surface-container-lowest: #0c0e12;
+  --color-surface-container-low:   #1a1c20;
+  --color-surface-container:       #1e2024;
+  --color-surface-container-high:  #282a2e;
+  --color-surface-container-highest: #333539;
+  --color-surface-variant:         #333539;
 
-  /* ── Fantasy / pillar accent aliases ── */
-  --color-fantasy-gold:    #f5c518;
-  --color-fantasy-ice:     #1a9faa;
-  --color-fantasy-crimson: #c0392b;
-  --color-fantasy-ember:   #f47c20;
-  --color-fantasy-violet:  #7b2d8b;
+  --color-on-surface:              #e2e2e8;
+  --color-on-surface-variant:      #bac9cc;
+  --color-on-background:           #e2e2e8;
 
-  /* ── Comic-book legacy aliases ── */
-  --color-comic-pink:  #FF007F;
-  --color-comic-blue:  #00E5FF;
-  --color-comic-green: #39FF14;
-  --color-amethyst:    #7C3AED;
+  --color-primary:                 #c3f5ff;
+  --color-primary-fixed:           #9cf0ff;
+  --color-primary-fixed-dim:       #00daf3;
+  --color-on-primary:              #00363d;
+  --color-on-primary-fixed:        #001f24;
+  --color-primary-container:       #00e5ff;
+  --color-on-primary-container:    #00626e;
+  --color-inverse-primary:         #006875;
+
+  --color-secondary:               #ffb1c3;
+  --color-secondary-fixed:         #ffd9e0;
+  --color-secondary-fixed-dim:     #ffb1c3;
+  --color-on-secondary:            #66002c;
+  --color-on-secondary-fixed:      #3f0019;
+  --color-secondary-container:     #ff4b89;
+  --color-on-secondary-container:  #590026;
+
+  --color-tertiary:                #ffecac;
+  --color-tertiary-fixed:          #ffe170;
+  --color-tertiary-fixed-dim:      #e9c400;
+  --color-on-tertiary:             #3a3000;
+  --color-on-tertiary-fixed:       #221b00;
+  --color-tertiary-container:      #f5cd00;
+  --color-on-tertiary-container:   #695700;
+
+  --color-outline:                 #849396;
+  --color-outline-variant:         #3b494c;
+
+  --color-error:                   #ffb4ab;
+  --color-on-error:                #690005;
+  --color-error-container:         #93000a;
+  --color-on-error-container:      #ffdad6;
+
+  --color-surface-tint:            #00daf3;
+  --color-inverse-surface:         #e2e2e8;
+  --color-inverse-on-surface:      #2f3035;
+
+  /* ── Legacy aliases (still used in non-redesigned pages) ── */
+  --color-obsidian:         #0d0d0f;
+  --color-comic-teal:       #1a9faa;
+  --color-comic-orange:     #f47c20;
+  --color-comic-red:        #c0392b;
+  --color-comic-yellow:     #f5c518;
+  --color-comic-white:      #f8f4e8;
+  --color-ink:              #111111;
+  --color-fantasy-gold:     #f5c518;
+  --color-fantasy-ice:      #1a9faa;
+  --color-fantasy-crimson:  #c0392b;
+  --color-fantasy-ember:    #f47c20;
+  --color-comic-pink:       #FF007F;
+  --color-comic-blue:       #00E5FF;
+  --color-comic-green:      #39FF14;
 
   /* ── Shadows ── */
-  --shadow-comic:        4px 4px 0 #111;
-  --shadow-comic-pink:   6px 6px 0 #FF007F;
-  --shadow-comic-blue:   6px 6px 0 #00E5FF;
-  --shadow-comic-yellow: 6px 6px 0 #f5c518;
-  --shadow-fantasy-glow: 0 0 18px rgba(245,197,24,0.35), 4px 4px 0 #111;
-
-  /* Page-specific bg colors */
-  --color-bg-init:   #0a1628;
-  --color-bg-about:  #0d3d47;
-  --color-bg-forge:  #2d0a08;
-  --color-bg-realm:  #0a2235;
-  --color-bg-vault:  #1a1a00;
-  --color-bg-guild:  #1a0d2e;
-  --color-bg-visions: #0d0d0f;
+  --shadow-comic:           4px 4px 0 #111;
+  --shadow-comic-pink:      6px 6px 0 #FF007F;
+  --shadow-comic-yellow:    6px 6px 0 #f5c518;
+  --shadow-fantasy-glow:    0 0 18px rgba(245,197,24,0.35), 4px 4px 0 #111;
 }
 
 @layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
+
   body {
-    background-color: #0a1628;
-    color: #f8f4e8;
-    font-family: "Space Grotesk", sans-serif;
-    font-feature-settings: 'ss01' on, 'ss02' on;
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
     touch-action: pan-y;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Material Symbols configuration */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 24px;
+    line-height: 1;
+    vertical-align: middle;
   }
 }
 
 /* ═══════════════════════════════════════════
-   COMIC SPEED LINES — SVG-based backgrounds
+   KRAYON DESIGN UTILITIES
 ════════════════════════════════════════════ */
 @layer utilities {
 
-  /* Halftone dot overlay */
+  /* ── Halftone overlays ── */
   .bg-halftone {
     background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 2px);
     background-size: 10px 10px;
   }
-
   .bg-halftone-light {
     background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 2px);
     background-size: 8px 8px;
   }
-
-  /* Speed lines radiating from centre */
-  .bg-speedlines {
-    background-image:
-      repeating-conic-gradient(
-        from 0deg at 50% 50%,
-        transparent 0deg,
-        transparent 6deg,
-        rgba(0,0,0,0.12) 6deg,
-        rgba(0,0,0,0.12) 7deg
-      );
+  .bg-halftone-white {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1.5px, transparent 2px);
+    background-size: 8px 8px;
+  }
+  .bg-halftone-cyan {
+    background-image: radial-gradient(#00daf3 1px, transparent 1px);
+    background-size: 8px 8px;
   }
 
-  /* Per-page tinted backgrounds with speed lines */
+  /* ── Speed lines (legacy) ── */
+  .bg-speedlines {
+    background-image: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg, transparent 6deg,
+      rgba(0,0,0,0.12) 6deg, rgba(0,0,0,0.12) 7deg
+    );
+  }
+
+  /* ── Page-specific backgrounds (legacy) ── */
   .page-bg-init {
     background-color: #0a1628;
     background-image:
@@ -107,57 +149,7 @@
       repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 7deg, rgba(255,255,255,0.03) 7deg, rgba(255,255,255,0.03) 8deg);
   }
 
-  .page-bg-about {
-    background-color: #0b2d38;
-    background-image:
-      radial-gradient(ellipse at 30% 40%, rgba(26,159,170,0.4) 0%, transparent 55%),
-      radial-gradient(ellipse at 75% 70%, rgba(244,124,32,0.3) 0%, transparent 45%),
-      radial-gradient(ellipse at 60% 10%, rgba(245,197,24,0.2) 0%, transparent 35%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(0,0,0,0.08) 5deg, rgba(0,0,0,0.08) 6deg);
-  }
-
-  .page-bg-forge {
-    background-color: #2a0905;
-    background-image:
-      radial-gradient(ellipse at 50% 50%, rgba(245,197,24,0.5) 0%, rgba(244,124,32,0.4) 25%, transparent 65%),
-      radial-gradient(ellipse at 15% 80%, rgba(192,57,43,0.4) 0%, transparent 45%),
-      radial-gradient(ellipse at 85% 15%, rgba(192,57,43,0.3) 0%, transparent 40%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 4deg, rgba(0,0,0,0.15) 4deg, rgba(0,0,0,0.15) 5deg);
-  }
-
-  .page-bg-realm {
-    background-color: #071d30;
-    background-image:
-      radial-gradient(ellipse at 50% 0%, rgba(26,159,170,0.5) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 85%, rgba(244,124,32,0.25) 0%, transparent 40%),
-      radial-gradient(ellipse at 10% 60%, rgba(26,159,170,0.2) 0%, transparent 35%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 6deg, rgba(255,255,255,0.02) 6deg, rgba(255,255,255,0.02) 7deg);
-  }
-
-  .page-bg-vault {
-    background-color: #1a1200;
-    background-image:
-      radial-gradient(ellipse at 50% 40%, rgba(245,197,24,0.45) 0%, rgba(244,124,32,0.3) 30%, transparent 60%),
-      radial-gradient(ellipse at 10% 90%, rgba(244,124,32,0.25) 0%, transparent 40%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(0,0,0,0.12) 5deg, rgba(0,0,0,0.12) 6deg);
-  }
-
-  .page-bg-guild {
-    background-color: #120822;
-    background-image:
-      radial-gradient(ellipse at 60% 30%, rgba(244,124,32,0.35) 0%, transparent 50%),
-      radial-gradient(ellipse at 20% 70%, rgba(26,159,170,0.3) 0%, transparent 45%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 6deg, rgba(255,255,255,0.025) 6deg, rgba(255,255,255,0.025) 7deg);
-  }
-
-  .page-bg-visions {
-    background-color: #0d0d0f;
-    background-image:
-      radial-gradient(ellipse at 50% 50%, rgba(192,57,43,0.3) 0%, rgba(244,124,32,0.2) 30%, transparent 60%),
-      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 5deg, rgba(255,255,255,0.03) 5deg, rgba(255,255,255,0.03) 6deg);
-  }
-
-  /* ── Comic ink border panels ── */
+  /* ── Comic-panel borders (legacy pages) ── */
   .comic-panel {
     border: 4px solid #111;
     box-shadow: 6px 6px 0 #111;
@@ -169,7 +161,6 @@
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 #111;
   }
-
   .comic-panel-dark {
     border: 4px solid #111;
     box-shadow: 6px 6px 0 #111;
@@ -178,28 +169,218 @@
     backdrop-filter: blur(8px);
   }
 
-  /* ── Comic speech bubble ── */
-  .speech-bubble {
-    background: #f8f4e8;
-    border: 3px solid #111;
-    border-radius: 16px;
-    box-shadow: 4px 4px 0 #111;
-    position: relative;
-    color: #111;
+  /* ── New design system — Krayon Neo cards ── */
+  .krayon-card {
+    background: var(--color-surface-container);
+    border: 1px solid rgba(59, 73, 76, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
   }
-  .speech-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -18px;
-    left: 24px;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 18px solid #111;
+  .krayon-card-feed {
+    background: var(--color-surface-container-low);
+    border: 1px solid rgba(132, 147, 150, 0.1);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  .krayon-card-feed:hover { transform: translateY(-4px); }
+
+  /* ── Input / Select styled ── */
+  .krayon-input {
+    background: var(--color-surface-container-high);
+    border: 1px solid rgba(59, 73, 76, 0.5);
+    border-radius: 0.5rem;
+    color: var(--color-on-surface);
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    outline: none;
+    appearance: none;
+  }
+  .krayon-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
+  .krayon-input::placeholder { color: rgba(186, 201, 204, 0.5); }
+
+  /* ── Tag / chip buttons ── */
+  .krayon-chip {
+    padding: 0.375rem 0.75rem;
+    background: var(--color-surface-container-high);
+    border: 1px solid rgba(59, 73, 76, 0.5);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .krayon-chip:hover {
+    border-color: rgba(195, 245, 255, 0.5);
+    color: var(--color-primary);
+  }
+  .krayon-chip-active {
+    padding: 0.375rem 0.75rem;
+    background: rgba(195, 245, 255, 0.1);
+    border: 1px solid rgba(195, 245, 255, 0.5);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    box-shadow: 0 0 8px rgba(195, 245, 255, 0.15);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
   }
 
-  /* ── Comic explosion shape ── */
+  /* ── Primary action button ── */
+  .krayon-btn-primary {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+  }
+  .krayon-btn-primary:hover {
+    background: var(--color-primary-fixed);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(195, 245, 255, 0.2);
+  }
+
+  /* ── Filter pill buttons ── */
+  .filter-pill-active {
+    background: var(--color-on-surface);
+    color: var(--color-surface);
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    white-space: nowrap;
+  }
+  .filter-pill {
+    background: var(--color-surface-container);
+    color: var(--color-on-surface);
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(132, 147, 150, 0.2);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .filter-pill:hover { background: var(--color-surface-variant); }
+
+  /* ── Custom scrollbar ── */
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-outline-variant);
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-outline);
+  }
+
+  /* ── Range slider styling ── */
+  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px; width: 16px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow: 0 0 10px rgba(195, 245, 255, 0.5);
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%; height: 4px; cursor: pointer;
+    background: var(--color-outline-variant);
+    border-radius: 2px;
+  }
+
+  /* ── Legacy button utilities (used by non-redesigned pages) ── */
+  .fantasy-button-primary {
+    background: #f5c518; border: 4px solid #111; box-shadow: 5px 5px 0 #111;
+    color: #111; font-family: "Bangers", cursive; letter-spacing: 0.08em; font-size: 1.1rem;
+    cursor: pointer; transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .fantasy-button-primary:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #111; }
+  .fantasy-button-primary:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 #111; }
+  .fantasy-button-secondary {
+    background: #1a9faa; border: 4px solid #111; box-shadow: 5px 5px 0 #111;
+    color: #f8f4e8; font-family: "Bangers", cursive; letter-spacing: 0.08em; font-size: 1.1rem;
+    cursor: pointer; transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .fantasy-button-secondary:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #111; }
+
+  .comic-button-pink {
+    background: #FF007F; border: 3px solid #111; box-shadow: 4px 4px 0 #111;
+    color: #fff; font-family: "Bangers", cursive; letter-spacing: 0.08em;
+    cursor: pointer; transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-pink:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-pink:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  .comic-button-cyan {
+    background: #00E5FF; border: 3px solid #111; box-shadow: 4px 4px 0 #111;
+    color: #111; font-family: "Bangers", cursive; letter-spacing: 0.08em;
+    cursor: pointer; transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-cyan:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-cyan:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  .comic-button-yellow {
+    background: #f5c518; border: 3px solid #111; box-shadow: 4px 4px 0 #111;
+    color: #111; font-family: "Bangers", cursive; letter-spacing: 0.08em;
+    cursor: pointer; transition: transform .12s, box-shadow .12s;
+  }
+  .comic-button-yellow:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .comic-button-yellow:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
+
+  .glass-slab {
+    background: rgba(10,10,12,0.6);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(26,159,170,0.3);
+  }
+
+  /* ── Text shadow utilities ── */
+  .text-shadow-comic    { text-shadow: 2px 2px 0 #111; }
+  .text-shadow-fantasy  { text-shadow: 3px 3px 0 #111, 0 0 20px rgba(245,197,24,0.4); }
+  .text-shadow-krayon   { text-shadow: 2px 2px 0 rgba(0,0,0,1); }
+
+  /* ── Shadow utilities ── */
+  .shadow-comic        { box-shadow: var(--shadow-comic); }
+  .shadow-comic-pink   { box-shadow: var(--shadow-comic-pink); }
+  .shadow-comic-yellow { box-shadow: var(--shadow-comic-yellow); }
+  .shadow-fantasy-glow { box-shadow: var(--shadow-fantasy-glow); }
+
+  /* ── 3D card utils ── */
+  .perspective-1000 { perspective: 1000px; }
+  .rotate-y-180     { transform: rotateY(180deg); }
+  .preserve-3d      { transform-style: preserve-3d; }
+  .backface-hidden  { backface-visibility: hidden; }
+
+  /* ── Mobile safe ── */
+  .touch-action-none { touch-action: none; }
+  .h-screen-safe     { height: 100dvh; }
+  .no-scrollbar-x    { overflow-x: hidden; }
+
+  /* ── Starburst shape ── */
   .starburst {
     clip-path: polygon(
       50% 0%, 61% 30%, 93% 12%, 75% 40%, 100% 50%,
@@ -207,181 +388,16 @@
       7% 88%, 25% 60%, 0% 50%, 25% 40%, 7% 12%, 39% 30%
     );
   }
-
-  /* ── Action labels (POW!, ZAP! etc) ── */
-  .action-text {
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.05em;
-    -webkit-text-stroke: 2px #111;
-    paint-order: stroke fill;
-  }
-
-  /* ── Nav icon pill in dock mode ── */
-  .nav-pill {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .nav-pill-icon {
-    width: 56px;
-    height: 56px;
-    border: 4px solid #111;
-    box-shadow: 5px 5px 0 #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-  }
-  .nav-pill-icon:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0 #111;
-  }
-  .nav-pill-label {
-    font-family: "Bangers", cursive;
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    background: #111;
-    color: #f8f4e8;
-    padding: 2px 10px;
-    border: 2px solid #111;
-    white-space: nowrap;
-  }
-
-  /* Scrollbar */
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(26,159,170,0.6);
-    border-radius: 3px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(26,159,170,0.9);
-  }
-
-  /* 3D card utils */
-  .perspective-1000 { perspective: 1000px; }
-  .rotate-y-180    { transform: rotateY(180deg); }
-  .preserve-3d     { transform-style: preserve-3d; }
-  .backface-hidden  { backface-visibility: hidden; }
-
-  /* Old compat classes still used in sub-pages */
-  .fantasy-panel {
-    border: 4px solid #111;
-    box-shadow: 6px 6px 0 #111;
-    background: #f8f4e8;
-    color: #111;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .fantasy-panel:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 #111;
-  }
-  .fantasy-button-primary {
-    background: #f5c518;
-    border: 4px solid #111;
-    box-shadow: 5px 5px 0 #111;
-    color: #111;
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.08em;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: transform 0.12s, box-shadow 0.12s;
-  }
-  .fantasy-button-primary:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0 #111;
-  }
-  .fantasy-button-primary:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 #111;
-  }
-  .fantasy-button-secondary {
-    background: #1a9faa;
-    border: 4px solid #111;
-    box-shadow: 5px 5px 0 #111;
-    color: #f8f4e8;
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.08em;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: transform 0.12s, box-shadow 0.12s;
-  }
-  .fantasy-button-secondary:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0 #111;
-  }
-  .glass-slab {
-    background: rgba(10,10,12,0.6);
-    backdrop-filter: blur(12px);
-    border: 2px solid rgba(26,159,170,0.3);
-  }
-  .text-shadow-fantasy {
-    text-shadow: 3px 3px 0 #111, 0 0 20px rgba(245,197,24,0.4);
-  }
-  .text-shadow-comic {
-    text-shadow: 2px 2px 0 #111;
-  }
-  .bg-halftone-white {
-    background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1.5px, transparent 2px);
-    background-size: 8px 8px;
-  }
-
-  /* ── Shadow utilities ── */
-  .shadow-comic        { box-shadow: var(--shadow-comic); }
-  .shadow-comic-pink   { box-shadow: var(--shadow-comic-pink); }
-  .shadow-comic-blue   { box-shadow: var(--shadow-comic-blue); }
-  .shadow-comic-yellow { box-shadow: var(--shadow-comic-yellow); }
-  .shadow-fantasy-glow { box-shadow: var(--shadow-fantasy-glow); }
-
-  /* ── Button utilities ── */
-  .comic-button-pink {
-    background: #FF007F;
-    border: 3px solid #111;
-    box-shadow: 4px 4px 0 #111;
-    color: #fff;
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: transform .12s, box-shadow .12s;
-  }
-  .comic-button-pink:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
-  .comic-button-pink:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
-
-  .comic-button-cyan {
-    background: #00E5FF;
-    border: 3px solid #111;
-    box-shadow: 4px 4px 0 #111;
-    color: #111;
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: transform .12s, box-shadow .12s;
-  }
-  .comic-button-cyan:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
-  .comic-button-cyan:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
-
-  .comic-button-yellow {
-    background: #f5c518;
-    border: 3px solid #111;
-    box-shadow: 4px 4px 0 #111;
-    color: #111;
-    font-family: "Bangers", cursive;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: transform .12s, box-shadow .12s;
-  }
-  .comic-button-yellow:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
-  .comic-button-yellow:active { transform: translate(2px,2px);  box-shadow: 1px 1px 0 #111; }
-
-  /* ── Mobile-safe utilities ── */
-  .touch-action-none { touch-action: none; }
-  .h-screen-safe     { height: 100dvh; }
-  .no-scrollbar-x    { overflow-x: hidden; }
 }
 
-/* ── Shimmer keyframe for streaming indicator ── */
+/* ── Shimmer keyframe ── */
 @keyframes shimmer {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(300%); }
+}
+
+/* ── Pulse glow keyframe ── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(195,245,255,0.3); }
+  50%       { box-shadow: 0 0 20px rgba(195,245,255,0.6); }
 }

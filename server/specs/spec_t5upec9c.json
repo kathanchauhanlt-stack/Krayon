@@ -1,0 +1,72 @@
+{
+  "id": "spec_t5upec9c",
+  "title": "huk vs spiderman",
+  "genre": "Fantasy",
+  "style": "American Comic",
+  "prompt": "Cars are burning. The glass facades of towering skyscrapers are shattered. Panicked civilians flee in all directions.Amidst the rubble stands the HULK. He beats his chest and lets out a deafening, gamma-irradiated roar.SHOT 1: WIDE SHOTHulk stands like an angry mountain. In front of him, Spider-Man appears small and vulnerable, perched on the twisted wreckage of a yellow cab.",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:18:52.205Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Hulk stands amidst rubble",
+          "caption": "Downtown Metropolis, chaos erupts",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Hulk%20stands%20amidst%20rubble%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47558"
+        },
+        {
+          "order": 1,
+          "scene_description": "Spider-Man appears, tiny before Hulk",
+          "caption": null,
+          "dialogue": "HULK SMASH!",
+          "bubbles": [
+            {
+              "character": "Hulk",
+              "type": "shout",
+              "text": "HULK SMASH!"
+            }
+          ],
+          "sfx": "ROAR!",
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Spider-Man%20appears%2C%20tiny%20before%20Hulk%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47559"
+        },
+        {
+          "order": 2,
+          "scene_description": "Close-up: Spider-Man's determined face",
+          "caption": null,
+          "dialogue": "Not the time for webs",
+          "bubbles": [
+            {
+              "character": "Spider-Man",
+              "type": "thought",
+              "text": "Not the time for webs"
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Close-up%3A%20Spider-Man's%20determined%20face%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47560"
+        },
+        {
+          "order": 3,
+          "scene_description": "Wide shot: Hulk charges, Spider-Man leaps",
+          "caption": null,
+          "dialogue": "Incoming!",
+          "bubbles": [
+            {
+              "character": "Spider-Man",
+              "type": "shout",
+              "text": "Incoming!"
+            }
+          ],
+          "sfx": "THUNDER!",
+          "image_url": "https://image.pollinations.ai/prompt/American%20Comic%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Wide%20shot%3A%20Hulk%20charges%2C%20Spider-Man%20leaps%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47561"
+        }
+      ]
+    }
+  ]
+}

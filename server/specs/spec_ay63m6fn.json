@@ -1,0 +1,96 @@
+{
+  "id": "spec_ay63m6fn",
+  "title": "narnia",
+  "genre": "Fantasy",
+  "style": "Webtoon",
+  "prompt": "A sprawling, majestic citadel of white stone and gleaming gold spires. The city is bursting at the seams—thousands of citizens crowd the bustling markets, and massive construction cranes erect new towers to expand the borders. High walls encircle the kingdom.\n\nINT. THE GRAND PLAZA - CONTINUOUS\n\nA massive stone statue stands in the center of the square: KING AETHEL, depicted as a holy Vanguard warrior, his sword piercing the skull of a roaring, monstrous beast.\n\nThe current, living KING AETHEL stands on a high balcony overlooking his people. Beside him stands GENERAL TORGON, a towering, armored warlord scarred by a thousand battles.\n\nAETHEL\n(Voice amplified by magic)\nLook upon our borders, children of Aethelgard! We multiply, we build, we conquer the wilderness. But do not let prosperity breed complacency. Deep within the forbidden northern wastes, in the black ruins of the old world, the enemy still breathes.\n\nThe crowd grows quiet. Fear ripples through the masses.\n\nAETHEL (CONT'D)\nThe Daemon In The Frost. The ultimate devil of the old era, locked away in an eternal block of ice. It waits. It hungers for our demise. We must grow stronger, more numerous, and more unified every single day. For only a massive, roaring civilization will have the strength to stand when the Daemon breaks his chains!\n\nThe crowd erupts into roaring cheers.\n\nBehind Aethel, General Torgon steps forward, bowing his head.\n\nTORGON\nThe garrisons are full, Your Grace. The population expands exactly according to the countdown.\n\nAethel turns back to his chamber, a dark, calculating smirk replacing his benevolent smile.\n\n[SCENE END]",
+  "panelCount": 6,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:09:53.102Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide establishing shot: A sprawling, majestic citadel of white stone and gleaming gold spires — Fantasy atmosphere, Webtoon art style",
+          "caption": "The story begins...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Wide%20establishing%20shot%3A%20A%20sprawling%2C%20majestic%20citadel%20of%20white%20stone%20and%20gleaming%20gold%20spires%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9338"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up shot: The city is bursting at the seams—thousands of citizens crowd the bustling markets, and massive construction cranes erect new towers to expand the borders — Fantasy atmosphere, Webtoon art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Close-up%20shot%3A%20The%20city%20is%20bursting%20at%20the%20seams%E2%80%94thousands%20of%20citizens%20crowd%20the%20bustling%20markets%2C%20and%20massive%20construction%20cranes%20erect%20new%20towers%20to%20expand%20the%20borders%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9339"
+        },
+        {
+          "order": 2,
+          "scene_description": "Medium shot: High walls encircle the kingdom — Fantasy atmosphere, Webtoon art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Medium%20shot%3A%20High%20walls%20encircle%20the%20kingdom%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9340"
+        },
+        {
+          "order": 3,
+          "scene_description": "Over-the-shoulder shot: INT — Fantasy atmosphere, Webtoon art style",
+          "caption": "In the shadows...",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Over-the-shoulder%20shot%3A%20INT%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9341"
+        }
+      ]
+    },
+    {
+      "page_number": 2,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Low-angle shot: THE GRAND PLAZA - CONTINUOUS\n\nA massive stone statue stands in the center of the square: KING AETHEL, depicted as a holy Vanguard warrior, his sword piercing the skull of a roaring, monstrous beast — Fantasy atmosphere, Webtoon art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Low-angle%20shot%3A%20THE%20GRAND%20PLAZA%20-%20CONTINUOUS%0A%0AA%20massive%20stone%20statue%20stands%20in%20the%20center%20of%20the%20square%3A%20KING%20AETHEL%2C%20depicted%20as%20a%20holy%20Vanguard%20warrior%2C%20his%20sword%20piercing%20the%20skull%20of%20a%20roaring%2C%20monstrous%20beast%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9342"
+        },
+        {
+          "order": 1,
+          "scene_description": "Bird's-eye view: The current, living KING AETHEL stands on a high balcony overlooking his people — Fantasy atmosphere, Webtoon art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Bird's-eye%20view%3A%20The%20current%2C%20living%20KING%20AETHEL%20stands%20on%20a%20high%20balcony%20overlooking%20his%20people%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9343"
+        },
+        {
+          "order": 2,
+          "scene_description": "Dramatic close-up: Beside him stands GENERAL TORGON, a towering, armored warlord scarred by a thousand battles — Fantasy atmosphere, Webtoon art style",
+          "caption": "The truth revealed.",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Dramatic%20close-up%3A%20Beside%20him%20stands%20GENERAL%20TORGON%2C%20a%20towering%2C%20armored%20warlord%20scarred%20by%20a%20thousand%20battles%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9344"
+        },
+        {
+          "order": 3,
+          "scene_description": "Wide establishing shot: AETHEL\n(Voice amplified by magic)\nLook upon our borders, children of Aethelgard — Fantasy atmosphere, Webtoon art style",
+          "caption": null,
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Webtoon%20comic%20book%20panel%2C%20Fantasy%20genre%3A%20Wide%20establishing%20shot%3A%20AETHEL%0A(Voice%20amplified%20by%20magic)%0ALook%20upon%20our%20borders%2C%20children%20of%20Aethelgard%20%E2%80%94%20Fantasy%20atmosphere%2C%20Webtoon%20art%20style%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=9345"
+        }
+      ]
+    }
+  ]
+}

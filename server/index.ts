@@ -10,18 +10,28 @@ import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
+import fs from "fs";
 
 dotenv.config({ path: ".env.local" });
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
+// ── Groq client (OpenAI-compatible, free tier) ───────────────────────────────
+const groq = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY ?? "",
+  baseURL: "https://api.groq.com/openai/v1",
+});
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH   = path.join(__dirname, "ainime.db");
+const SPECS_DIR = path.join(__dirname, "specs");
+
+// Ensure specs directory exists for JSON records
+if (!fs.existsSync(SPECS_DIR)) fs.mkdirSync(SPECS_DIR, { recursive: true });
 
 // ── Open / create database ──────────────────────────────────────────────────
 const db = new Database(DB_PATH);
-db.pragma("journal_mode = WAL");   // faster concurrent reads
+db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
 // ── Schema ─────────────────────────────────────────────────────────────────
@@ -43,7 +53,7 @@ db.exec(`
     genre        TEXT NOT NULL DEFAULT 'Fantasy',
     style        TEXT NOT NULL DEFAULT 'American Comic',
     concept      TEXT,
-    status       TEXT NOT NULL DEFAULT 'draft',   -- 'draft' | 'final'
+    status       TEXT NOT NULL DEFAULT 'draft',
     badge        TEXT NOT NULL DEFAULT 'WORK IN PROGRESS',
     mana_count   INTEGER NOT NULL DEFAULT 0,
     remix_count  INTEGER NOT NULL DEFAULT 0,
@@ -54,6 +64,7 @@ db.exec(`
     id           TEXT PRIMARY KEY,
     comic_id     TEXT NOT NULL REFERENCES comics(id) ON DELETE CASCADE,
     page_number  INTEGER NOT NULL DEFAULT 1,
+    layout       TEXT NOT NULL DEFAULT 'grid-2x2',
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -64,7 +75,7 @@ db.exec(`
     image_url    TEXT,
     dialogue     TEXT,
     caption      TEXT,
-    panel_type   TEXT DEFAULT 'normal',   -- 'normal' | 'accent' | 'wide'
+    panel_type   TEXT DEFAULT 'normal',
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -92,54 +103,41 @@ db.exec(`
     style        TEXT NOT NULL DEFAULT 'American Comic',
     concept      TEXT,
     progress     INTEGER NOT NULL DEFAULT 0,
-    locked       INTEGER NOT NULL DEFAULT 0,   -- 0=false, 1=true
+    locked       INTEGER NOT NULL DEFAULT 0,
     pages_count  INTEGER NOT NULL DEFAULT 0,
     created_at   TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS comic_specs (
+    id           TEXT PRIMARY KEY,
+    comic_id     TEXT REFERENCES comics(id) ON DELETE CASCADE,
+    spec_json    TEXT NOT NULL,
+    created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
-// ── Seed demo data (only if tables are empty) ───────────────────────────────
+// ── Safe schema migrations (idempotent) ─────────────────────────────────────
+const addColumnIfMissing = (table: string, col: string, def: string) => {
+  try {
+    const cols = (db.prepare(`PRAGMA table_info(${table})`).all() as any[]).map(c => c.name);
+    if (!cols.includes(col)) {
+      db.prepare(`ALTER TABLE ${table} ADD COLUMN ${col} ${def}`).run();
+      console.log(`✅ Added column ${table}.${col}`);
+    }
+  } catch {/* already exists */}
+};
+addColumnIfMissing("panels", "bubbles_json", "TEXT");
+addColumnIfMissing("panels", "sfx",          "TEXT");
+addColumnIfMissing("panels", "character_name", "TEXT");
+addColumnIfMissing("panels", "bubble_type",    "TEXT DEFAULT 'speech'");
+
+// ── Seed minimal user data (only if DB is fresh) ────────────────────────────
 const userCount = (db.prepare("SELECT COUNT(*) as c FROM users").get() as any).c;
 if (userCount === 0) {
-  const insertUser = db.prepare(`
-    INSERT INTO users (id, username, rank, bio, avatar_url)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-  const insertComic = db.prepare(`
-    INSERT INTO comics (id, title, author_id, cover_url, genre, style, concept, status, badge, mana_count, remix_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const insertDraft = db.prepare(`
-    INSERT INTO drafts (id, user_id, title, genre, style, progress, locked, pages_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  // Users
-  insertUser.run("u1", "ZeroX",   "Grand Architect",    "Weaving realities from the void.", null);
-  insertUser.run("u2", "Luna_Dev","Adept Weaver",        "Dreamscaper and pixel architect.", null);
-  insertUser.run("u3", "Chronos", "Grand Architect",    "Time bends for no one but me.",   null);
-  insertUser.run("u4", "BrassCog","Novice Chronicler",  "Gears and steam, always.",        null);
-  insertUser.run("u5", "RedSeal", "Master Illusionist", "Crimson ink flows eternal.",       null);
-
-  // Comics
-  const comics = [
-    ["c1","Neon Ronin: Echoes of Neo-Kyoto","u1","https://images.unsplash.com/photo-1578632292335-df3abbb0d586?q=80&w=800","Cyberpunk","Manga","A ronin navigates a neon-soaked dystopia","final","EPIC FINALE",1240,88],
-    ["c2","Aetheria: The Floating Spire","u2","https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=800","Fantasy","American Comic","A mage discovers a city adrift in the clouds","draft","WORK IN PROGRESS",856,42],
-    ["c3","Void Walker: Singularity","u3","https://images.unsplash.com/photo-1614728263952-84ea206f99b6?q=80&w=800","Sci-Fi","Noir","An entity crosses the boundary of dimensions","final","TRENDING",3200,245],
-    ["c4","Steam Heart","u4","https://images.unsplash.com/photo-1589149098258-3e9102ca63d3?q=80&w=800","Noir","Webtoon","Love between a clockmaker and an automaton","draft","WORK IN PROGRESS",450,15],
-    ["c5","Crimson Mandate","u5","https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800","Fantasy","Painted","A blood pact that shattered an empire","final","NEW DROP",720,34],
-    ["c6","Ghost Protocol Omega","u1","https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?q=80&w=800","Cyberpunk","American Comic","Ghosts of the net rise against their creators","final","EPIC FINALE",1900,112],
-  ];
-  for (const c of comics) insertComic.run(...c as any);
-
-  // Drafts for ZeroX (u1)
-  insertDraft.run("d1","u1","The Ruined Spires","Fantasy","Painted",65,1,12);
-  insertDraft.run("d2","u1","Cyber-Soul 2099","Cyberpunk","Manga",12,0,3);
-  insertDraft.run("d3","u1","Witch of the Red Glade","Horror","Webtoon",98,1,22);
-  insertDraft.run("d4","u1","Iron Meridian","Sci-Fi","American Comic",44,0,8);
-
-  console.log("✅ Database seeded with demo data");
+  db.prepare(`INSERT INTO users (id, username, rank, bio, avatar_url) VALUES (?, ?, ?, ?, ?)`)
+    .run("u1", "Creator", "Grand Architect", "Weaving realities from the void.", null);
+  console.log("✅ Default user created");
 }
 
 // ── Express app ─────────────────────────────────────────────────────────────
@@ -147,24 +145,17 @@ const app  = express();
 const PORT = process.env.API_PORT ?? 3001;
 
 app.use(cors({ origin: "*" }));
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
-// ─── helper: generate a short ID ───────────────────────────────────────────
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  COMICS
 // ══════════════════════════════════════════════════════════════════════════════
 
-// GET /api/comics?status=final|draft&genre=X&search=X
 app.get("/api/comics", (req, res) => {
   const { status, genre, search } = req.query;
-  let sql = `
-    SELECT c.*, u.username as author_name
-    FROM comics c
-    JOIN users u ON u.id = c.author_id
-    WHERE 1=1
-  `;
+  let sql = `SELECT c.*, u.username as author_name FROM comics c JOIN users u ON u.id = c.author_id WHERE 1=1`;
   const params: any[] = [];
   if (status) { sql += " AND c.status = ?"; params.push(status); }
   if (genre)  { sql += " AND c.genre  = ?"; params.push(genre); }
@@ -173,49 +164,32 @@ app.get("/api/comics", (req, res) => {
   res.json(db.prepare(sql).all(...params));
 });
 
-// GET /api/comics/:id
 app.get("/api/comics/:id", (req, res) => {
-  const comic = db.prepare(`
-    SELECT c.*, u.username as author_name
-    FROM comics c JOIN users u ON u.id = c.author_id
-    WHERE c.id = ?
-  `).get(req.params.id);
+  const comic = db.prepare(`SELECT c.*, u.username as author_name FROM comics c JOIN users u ON u.id = c.author_id WHERE c.id = ?`).get(req.params.id);
   if (!comic) return res.status(404).json({ error: "Not found" });
   res.json(comic);
 });
 
-// POST /api/comics  — create a new comic (from Forge)
 app.post("/api/comics", (req, res) => {
   const { title, author_id = "u1", cover_url, genre, style, concept, status = "draft" } = req.body;
   if (!title) return res.status(400).json({ error: "title is required" });
   const id = `c_${uid()}`;
   const badge = status === "final" ? "EPIC FINALE" : "WORK IN PROGRESS";
-  db.prepare(`
-    INSERT INTO comics (id, title, author_id, cover_url, genre, style, concept, status, badge)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(id, title, author_id, cover_url ?? null, genre ?? "Fantasy", style ?? "American Comic", concept ?? null, status, badge);
+  db.prepare(`INSERT INTO comics (id, title, author_id, cover_url, genre, style, concept, status, badge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, title, author_id, cover_url ?? null, genre ?? "Fantasy", style ?? "American Comic", concept ?? null, status, badge);
   res.status(201).json({ id });
 });
 
-// PATCH /api/comics/:id  — publish / update
 app.patch("/api/comics/:id", (req, res) => {
   const { title, cover_url, genre, style, concept, status } = req.body;
   const badge = status === "final" ? "EPIC FINALE" : "WORK IN PROGRESS";
-  db.prepare(`
-    UPDATE comics
-    SET title=COALESCE(?,title), cover_url=COALESCE(?,cover_url),
-        genre=COALESCE(?,genre), style=COALESCE(?,style),
-        concept=COALESCE(?,concept), status=COALESCE(?,status), badge=?
-    WHERE id=?
-  `).run(title, cover_url, genre, style, concept, status, badge, req.params.id);
+  db.prepare(`UPDATE comics SET title=COALESCE(?,title), cover_url=COALESCE(?,cover_url), genre=COALESCE(?,genre), style=COALESCE(?,style), concept=COALESCE(?,concept), status=COALESCE(?,status), badge=? WHERE id=?`).run(title, cover_url, genre, style, concept, status, badge, req.params.id);
   res.json({ ok: true });
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  MANA (likes)
+//  MANA
 // ══════════════════════════════════════════════════════════════════════════════
 
-// POST /api/comics/:id/mana  — toggle like (user hardcoded as u1 for now)
 app.post("/api/comics/:id/mana", (req, res) => {
   const { user_id = "u1" } = req.body;
   const existing = db.prepare("SELECT id FROM mana WHERE user_id=? AND comic_id=?").get(user_id, req.params.id);
@@ -230,7 +204,6 @@ app.post("/api/comics/:id/mana", (req, res) => {
   }
 });
 
-// GET /api/comics/:id/mana?user_id=X
 app.get("/api/comics/:id/mana", (req, res) => {
   const { user_id = "u1" } = req.query;
   const liked = !!db.prepare("SELECT id FROM mana WHERE user_id=? AND comic_id=?").get(user_id, req.params.id);
@@ -239,51 +212,37 @@ app.get("/api/comics/:id/mana", (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  DRAFTS (Vault)
+//  DRAFTS
 // ══════════════════════════════════════════════════════════════════════════════
 
-// GET /api/drafts?user_id=X
 app.get("/api/drafts", (req, res) => {
   const { user_id = "u1" } = req.query;
   res.json(db.prepare("SELECT * FROM drafts WHERE user_id=? ORDER BY updated_at DESC").all(user_id));
 });
 
-// POST /api/drafts  — save draft from Forge
 app.post("/api/drafts", (req, res) => {
   const { title, user_id = "u1", genre, style, concept } = req.body;
   if (!title) return res.status(400).json({ error: "title is required" });
   const id = `d_${uid()}`;
-  db.prepare(`
-    INSERT INTO drafts (id, user_id, title, genre, style, concept)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(id, user_id, title, genre ?? "Fantasy", style ?? "American Comic", concept ?? null);
+  db.prepare(`INSERT INTO drafts (id, user_id, title, genre, style, concept) VALUES (?, ?, ?, ?, ?, ?)`).run(id, user_id, title, genre ?? "Fantasy", style ?? "American Comic", concept ?? null);
   res.status(201).json({ id });
 });
 
-// PATCH /api/drafts/:id
 app.patch("/api/drafts/:id", (req, res) => {
   const { progress, locked, pages_count, title, concept } = req.body;
-  db.prepare(`
-    UPDATE drafts
-    SET progress=COALESCE(?,progress), locked=COALESCE(?,locked),
-        pages_count=COALESCE(?,pages_count), title=COALESCE(?,title),
-        concept=COALESCE(?,concept), updated_at=datetime('now')
-    WHERE id=?
-  `).run(progress, locked, pages_count, title, concept, req.params.id);
+  db.prepare(`UPDATE drafts SET progress=COALESCE(?,progress), locked=COALESCE(?,locked), pages_count=COALESCE(?,pages_count), title=COALESCE(?,title), concept=COALESCE(?,concept), updated_at=datetime('now') WHERE id=?`).run(progress, locked, pages_count, title, concept, req.params.id);
   res.json({ ok: true });
 });
 
-// DELETE /api/drafts/:id
 app.delete("/api/drafts/:id", (req, res) => {
   db.prepare("DELETE FROM drafts WHERE id=?").run(req.params.id);
   res.json({ ok: true });
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  USERS / GUILD
+//  USERS
 // ══════════════════════════════════════════════════════════════════════════════
 
-// GET /api/users/:id
 app.get("/api/users/:id", (req, res) => {
   const user = db.prepare("SELECT * FROM users WHERE id=?").get(req.params.id);
   if (!user) return res.status(404).json({ error: "Not found" });
@@ -294,135 +253,525 @@ app.get("/api/users/:id", (req, res) => {
   res.json({ ...(user as object), artifacts, mana, followers, published });
 });
 
-// PATCH /api/users/:id
 app.patch("/api/users/:id", (req, res) => {
   const { username, bio, rank } = req.body;
-  db.prepare(`
-    UPDATE users SET username=COALESCE(?,username), bio=COALESCE(?,bio), rank=COALESCE(?,rank) WHERE id=?
-  `).run(username, bio, rank, req.params.id);
+  db.prepare(`UPDATE users SET username=COALESCE(?,username), bio=COALESCE(?,bio), rank=COALESCE(?,rank) WHERE id=?`).run(username, bio, rank, req.params.id);
   res.json({ ok: true });
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  AI PROXIES (GEMINI)
+//  AI — ENHANCE SCENE
 // ══════════════════════════════════════════════════════════════════════════════
 
-// POST /api/ai/enhance-scene
 app.post("/api/ai/enhance-scene", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "prompt is required" });
-
-  const systemInstruction =
-    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
-
   try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\n${prompt}`,
+    const completion = await groq.chat.completions.create({
+      model: GROQ_MODEL,
+      messages: [
+        {
+          role: "system",
+          content: "You are a professional comic book writer. Enhance scene descriptions to be more cinematic and comic-book ready. Keep responses under 150 words. Return ONLY the enhanced text.",
+        },
+        { role: "user", content: prompt },
+      ],
+      max_tokens: 300,
+      temperature: 0.8,
     });
-    res.json({ enhancedText: result.text ?? prompt });
-  } catch (error: any) {
-    console.error("Gemini enhanceScenePrompt error:", error);
-    res.status(500).json({ error: error.message ?? "Gemini error" });
+    res.json({ enhancedText: completion.choices[0]?.message?.content ?? prompt });
+  } catch (e: any) {
+    console.warn("Groq enhance-scene error:", e.message);
+    res.json({ enhancedText: prompt }); // Silently fall back
   }
 });
 
-// POST /api/ai/generate-panels
-app.post("/api/ai/generate-panels", async (req, res) => {
-  const { scene, genre, style, title } = req.body;
-  if (!scene) return res.status(400).json({ error: "scene is required" });
+// ══════════════════════════════════════════════════════════════════════════════
+//  KRAYON — AI COMIC GENERATION ENGINE  v2.0
+//  ───────────────────────────────────────────────────────────────────────────
+//  PROJECT CONTEXT (injected into AI system prompt):
+//  Krayon is a next-generation AI manga/comic creation platform. Users give a
+//  story concept, genre, and style — the AI writes the full manga script with
+//  professional structure, cinematic camera direction, authentic dialogue bubbles
+//  (speech/thought/shout/whisper/sfx), and produces manga-quality images via
+//  NVIDIA NIM FLUX.2-Klein-4B.
+//
+//  FLOW:
+//   User Input → Groq manga scriptwriter AI → structured panel scripts
+//   panel scripts → genre-aware FLUX prompt builder → NVIDIA NIM images
+//   all saved to SQLite + spec file → returned as complete comic
+// ══════════════════════════════════════════════════════════════════════════════
 
-  const systemInstruction = `You are a professional comic book writer. 
-Comic title: "${title || "Untitled"}". Genre: ${genre || "Fantasy"}. Art style: ${style || "American Comic"}.
-Given the scene below, generate exactly 4 panel descriptions for a comic page.
-Format your response as a numbered list:
-1. Panel 1: ...
-2. Panel 2: ...
-3. Panel 3: ...
-4. Panel 4: ...
-Each description should be one sentence describing camera angle, action, and mood. Do NOT add extra text.`;
+/** ComicSpec: the structured JSON passed to/from Gemini */
+interface ComicSpec {
+  id: string;
+  title: string;
+  genre: string;
+  style: string;
+  prompt: string;
+  panelCount: number;
+  author_id: string;
+  created_at: string;
+  pages: SpecPage[];
+}
 
-  try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\nScene: ${scene}`,
-    });
+interface SpecPage {
+  page_number: number;
+  layout: string;
+  panels: SpecPanel[];
+}
 
-    const raw = result.text ?? "";
-    const lines = raw
-      .split(/\n/)
-      .map((l) => l.replace(/^\d+\.\s*/u, "").trim())
-      .filter((l) => l.length > 0);
+interface Bubble {
+  character: string;  // Named character (e.g. "Ryuu", "UNIT-7") or "NARRATOR"
+  type: "speech"      // oval bubble — normal spoken dialogue
+    | "thought"       // cloud bubble with dots — internal monologue
+    | "shout"         // jagged spiky starburst — battle cry, extreme emotion
+    | "whisper"       // dashed outline oval — soft/secret speech, fear
+    | "caption";      // rectangular box — narrator voice, time/place stamps
+  text: string;       // The actual text content
+}
 
-    while (lines.length < 4) {
-      lines.push(`Panel ${lines.length + 1}: The scene continues...`);
-    }
-    res.json({ panels: lines.slice(0, 4) });
-  } catch (error: any) {
-    console.error("Gemini generatePanelDescriptions error:", error);
-    res.status(500).json({ error: error.message ?? "Gemini error" });
-  }
-});
+interface SpecPanel {
+  order: number;
+  scene_description: string;   // What the image depicts
+  caption: string | null;      // Narration text at top/bottom of panel
+  dialogue: string | null;     // Legacy single-line dialogue (kept for compat)
+  bubbles: Bubble[];           // NEW: rich multi-character dialogue
+  sfx: string | null;          // Sound effect text e.g. "BOOM!"
+  image_url: string;           // NVIDIA NIM FLUX.2-Klein-4B image (base64 data URI) or Pollinations fallback
+}
 
-// POST /api/ai/generate-dialogue
-app.post("/api/ai/generate-dialogue", async (req, res) => {
-  const { panelContext, character } = req.body;
-  if (!panelContext || !character) {
-    return res.status(400).json({ error: "panelContext and character are required" });
-  }
+// ── NVIDIA NIM FLUX.2-Klein-4B image generation ─────────────────────────────
+const NVIDIA_NIM_ENDPOINT = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.2-klein-4b";
+const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY ?? "";
 
-  const prompt = `You are writing dialogue for a comic book character.
-Character: ${character}.
-Scene context: ${panelContext}.
-Write ONE single line of dialogue (maximum 12 words) that this character would say. Return ONLY the dialogue text, no quotation marks, no attribution, no explanations.`;
+/**
+ * Build an expert FLUX prompt tuned for authentic manga/comic aesthetics per genre.
+ * Formula (FLUX weights early tokens highest):
+ *   [Subject+Action] → [Art Style] → [Lighting] → [Technique] → [Mood]
+ */
+function buildMangaImagePrompt(scene: string, style: string, genre: string): string {
+  // Genre-specific visual DNA — what makes each genre look distinctive
+  const genreArt: Record<string, { art: string; light: string; technique: string; mood: string }> = {
+    "Shonen": {
+      art:       "dynamic shonen manga panel, bold heavy ink outlines, high-contrast black and white illustration",
+      light:     "dramatic rim lighting, intense directional backlight, deep shadow contrast",
+      technique: "speed lines radiating from impact point, screentone texture on shadows, cross-hatching for depth, kinetic energy lines",
+      mood:      "explosive raw power, intense determination, battle-hardened energy",
+    },
+    "Shojo": {
+      art:       "delicate shojo manga style, fine elegant ink lines, soft flowing composition, expressive characters",
+      light:     "soft warm diffused lighting, golden hour glow, gentle ethereal rim light",
+      technique: "floral screentone background, sparkle dot-pattern texture, thin graceful linework, soft halftone gradients",
+      mood:      "romantic tender atmosphere, emotional warmth, gentle and graceful feeling",
+    },
+    "Fantasy": {
+      art:       "epic fantasy manga panel, richly detailed ink illustration, ornate world-building composition",
+      light:     "dramatic mystical lighting, magical energy glow, chiaroscuro shadows, ethereal backlighting",
+      technique: "intricate cross-hatching for texture, dense screentone layers, epic cinematic framing, detailed environment",
+      mood:      "mythic grandeur, sense of wonder, heroic epic atmosphere",
+    },
+    "Sci-Fi": {
+      art:       "cyberpunk manga panel, clean futuristic ink illustration, sleek technical linework, digital aesthetic",
+      light:     "neon rim lighting with cyan and magenta hues, holographic glow effects, harsh industrial contrast",
+      technique: "circuit-pattern screentones, geometric cross-hatching, perspective speed lines, HUD overlay elements",
+      mood:      "cold dystopian tension, technological awe, cyberpunk atmosphere",
+    },
+    "Horror": {
+      art:       "horror manga panel, heavy oppressive dark ink, unsettling composition, disturbing visual detail",
+      light:     "single harsh light source casting long twisted shadows, extreme chiaroscuro, darkness consuming frame edges",
+      technique: "dense heavy cross-hatching for shadow depth, solid black screentones, distortion lines, jagged edges",
+      mood:      "suffocating dread, psychological terror, creeping supernatural darkness",
+    },
+    "Romance": {
+      art:       "romance manga panel, soft expressive ink style, intimate close composition, heartfelt character art",
+      light:     "warm golden soft lighting, gentle bokeh background glow, romantic twilight atmosphere",
+      technique: "soft dot-pattern screentones, flowing graceful linework, blush rendering, tender intimate framing",
+      mood:      "heartfelt emotion, tender intimacy, bittersweet longing",
+    },
+    "Action": {
+      art:       "action manga panel, explosive dynamic ink illustration, high-energy kinetic composition",
+      light:     "dramatic hard side lighting, impact flash effects, high contrast shadow play",
+      technique: "dense speed lines, impact burst radiating lines, motion blur ink strokes, explosive screentone patterns",
+      mood:      "raw adrenaline, explosive movement, unstoppable force",
+    },
+    "Slice of Life": {
+      art:       "slice of life manga panel, clean casual ink style, warm authentic everyday composition",
+      light:     "natural soft ambient daylight, cozy warm room lighting, gentle realistic shadows",
+      technique: "light clean halftone screentones, minimal precise linework, expressive character faces, detailed background",
+      mood:      "cozy authentic warmth, relatable human moment, nostalgic everyday feeling",
+    },
+  };
 
-  try {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
-    const text = (result.text ?? "").trim().replace(/^["']|["']$/g, "");
-    const words = text.split(/\s+/);
-    res.json({ dialogue: words.slice(0, 12).join(" ") });
-  } catch (error: any) {
-    console.error("Gemini generateDialogue error:", error);
-    res.status(500).json({ error: error.message ?? "Gemini error" });
-  }
-});
+  // Style-specific art direction — how the overall rendering looks
+  const styleGuide: Record<string, string> = {
+    "American Comic": "American comic book art, bold cel-shaded colors, thick black outlines, Marvel and DC heroic aesthetic, dynamic perspective",
+    "Manga":          "authentic Japanese manga, crisp black and white ink, professional Shueisha or Kodansha publication quality, clean screentones",
+    "Manhwa":         "Korean manhwa webtoon style, full-color digital painting, clean modern art style, vertical scroll composition",
+    "European Comic": "Franco-Belgian bande dessinée, ligne claire clean precise lines, rich detailed colors, Moebius and Tintin aesthetic",
+    "Chibi":          "super-deformed chibi manga, cute exaggerated large-head proportions, playful simple rounded linework, adorable expression",
+    "Noir":           "noir comic, stark high-contrast monochrome, heavy oppressive shadow, Frank Miller Sin City aesthetic, film noir atmosphere",
+  };
 
-// GET /api/ai/stream-scene
-app.get("/api/ai/stream-scene", async (req, res) => {
-  const { prompt } = req.query;
-  if (!prompt || typeof prompt !== "string") {
-    return res.status(400).json({ error: "prompt query param is required" });
-  }
+  const gp = genreArt[genre] ?? genreArt["Action"];
+  const sd = styleGuide[style] ?? `${style} comic art, professional illustration`;
 
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+  return [
+    scene,           // Subject + action FIRST — highest FLUX weight
+    gp.art,          // Art style identity
+    sd,              // Style-specific rendering direction
+    gp.light,        // Lighting
+    gp.technique,    // Manga-specific visual techniques
+    gp.mood,         // Atmosphere
+    "single panel composition, no text overlays, no speech bubbles visible, no panel borders within image",
+    "high definition, sharp crisp focus, professional manga publication quality",
+  ].join(", ");
+}
 
-  const systemInstruction =
-    "You are a professional comic book writer and visual artist. Enhance this scene description to be more cinematic, visual, and comic-book ready. Keep it under 150 words. Return ONLY the enhanced text, no labels or explanations.";
+/**
+ * Generate a comic panel image via NVIDIA NIM FLUX.2-Klein-4B.
+ * Returns a base64 data URI (data:image/jpeg;base64,...) on success.
+ * Falls back to Pollinations if key missing or call fails.
+ */
+async function generatePanelImage(
+  scene: string, style: string, genre: string, seed: number
+): Promise<string> {
+  const prompt = buildMangaImagePrompt(scene, style, genre);
 
-  try {
-    const stream = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash",
-      contents: `${systemInstruction}\n\n${prompt}`,
-    });
+  if (NVIDIA_API_KEY) {
+    try {
+      const resp = await fetch(NVIDIA_NIM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${NVIDIA_API_KEY}`,
+          "accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ prompt, width: 1024, height: 1024, steps: 4, seed: seed % 2147483647, cfg_scale: 1, samples: 1 }),
+      });
 
-    for await (const chunk of stream) {
-      const text = chunk.text;
-      if (text) {
-        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => resp.statusText);
+        throw new Error(`NVIDIA NIM ${resp.status}: ${errText.slice(0, 200)}`);
       }
+
+      const data = await resp.json() as { artifacts?: Array<{ base64: string; finishReason: string; seed: number }> };
+      const b64 = data.artifacts?.[0]?.base64;
+
+      if (b64) {
+        console.log(`✅ NVIDIA NIM [${genre}/${style}] image OK (seed=${seed})`);
+        return `data:image/jpeg;base64,${b64}`;
+      }
+      throw new Error("NVIDIA NIM: empty artifacts");
+    } catch (e: any) {
+      console.warn(`⚠️  NVIDIA NIM failed (${e.message}) — Pollinations fallback`);
     }
-    res.write("data: [DONE]\n\n");
-    res.end();
-  } catch (error) {
-    console.error("Gemini streamSceneEnhancement error:", error);
-    res.write(`data: ${JSON.stringify({ error: "AI Enhancement unavailable" })}\n\n`);
-    res.end();
+  } else {
+    console.warn("⚠️  NVIDIA_API_KEY not set — Pollinations fallback");
   }
+
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=512&nologo=1&model=flux&seed=${seed}`;
+}
+
+/**
+ * KRAYON-SENSEI — The Manga AI Brain
+ * Generates structured comic pages using professional manga scripting knowledge.
+ * Uses Groq (llama-3.3-70b) as the manga scriptwriter with expert context.
+ */
+async function generateComicStructure(spec: {
+  title: string; genre: string; style: string;
+  prompt: string; panelCount: number;
+}): Promise<{ pages: SpecPage[]; characters: string[] }> {
+  const panelsPerPage = 4;
+  const totalPages = Math.ceil(spec.panelCount / panelsPerPage);
+  const totalPanels = totalPages * panelsPerPage;
+
+  interface AiPanel {
+    scene: string;
+    caption: string | null;
+    dialogue: string | null;
+    bubbles: Bubble[];
+    sfx: string | null;
+    panel_type: string;
+  }
+  let aiPanels: AiPanel[] = [];
+  let characters: string[] = [];
+
+  try {
+    // ── KRAYON-SENSEI: The manga scriptwriter AI brain ────────────────────────
+    const systemPrompt = `You are KRAYON-SENSEI, the expert manga scriptwriter AI for the Krayon platform — a professional AI-powered manga creation app.
+
+YOUR ROLE: You write professional manga/comic scripts that will be rendered by an AI image model (NVIDIA FLUX.2-Klein-4B). Your scene descriptions are sent directly to the image AI, so they must be precise, cinematic, and painterly — as if directing a real manga artist.
+
+PROFESSIONAL MANGA VISUAL LANGUAGE you must apply:
+
+1. NARRATIVE ARC (enforce strictly):
+   - ACT 1 — ESTABLISH: Wide shots, set the world, introduce protagonist. Mood-setting captions.
+   - ACT 2 — INCITING MOMENT: Something disrupts peace. Conflict or antagonist introduced.
+   - ACT 3 — RISING TENSION: Character reacts, makes a choice. Internal struggle (thought bubble).
+   - ACT 4 — CLIMAX: Peak action or emotional peak. Maximum SFX. Most dynamic camera.
+   - ACT 5 — TURNING POINT: Unexpected twist or revelation. Close-up on reaction face.
+   - ACT 6 — RESOLUTION: Consequence shown. Thematic closing caption. Final mood.
+
+2. CAMERA VOCABULARY (use these exact abbreviations in scene field):
+   ELS = Extreme Long Shot (epic scale, tiny figures)
+   WS = Wide Shot (full figures + environment)
+   MS = Medium Shot (waist-up, dialogue)
+   MCU = Medium Close-Up (chest-up, tension)
+   CU = Close-Up (face only, emotion)
+   ECU = Extreme Close-Up (eyes/hands/weapon, maximum intensity)
+   LA = Low Angle (upward — power, dominance, heroism)
+   HA = High Angle (downward — vulnerability, overview)
+   OTS = Over The Shoulder (confrontation framing)
+   POV = Point of View (reader sees through character's eyes)
+   DT = Dutch Tilt (diagonal frame — chaos, madness, unease)
+
+3. PANEL PACING RULES:
+   - NEVER repeat same camera angle twice in a row
+   - Rhythm: action → reaction → dialogue → action
+   - 30% panels should be SILENT (no bubbles, pure visual)
+   - Max 2 bubbles per panel — never more
+   - SFX scale: whisper="tick", medium="CRACK!", climax="KRAKOOOOM!!!"
+   - Establish with WS/ELS, build to MCU/CU, climax with LA+ECU
+
+4. BUBBLE TYPE SYSTEM:
+   "speech" = oval — normal spoken dialogue
+   "thought" = cloud with dots — internal monologue only (never spoken)
+   "shout" = jagged spiky burst — battle cry, rage, extreme shock (max 1 per page)
+   "whisper" = dashed oval — secrets, weakness, fear, quiet voice
+   "caption" = rectangular box — narrator, time stamps, location, thematic lines
+
+5. MANGA VISUAL EFFECTS (describe in scene field for image AI):
+   - "speed lines radiating from [point]" — motion, impact
+   - "focus lines converging on [subject]" — attention, tension
+   - "dark vertical gloom lines surrounding character" — despair, dread
+   - "crackling energy aura emanating from character" — power, rage
+   - "kinetic motion blur trailing [body part]" — fast movement
+   - "dramatic screentone shadow patterns" — dark atmosphere
+
+6. CHARACTER RULES:
+   - Give every character a strong memorable NAME in their first appearance
+   - Describe their appearance consistently every time (same hair, outfit, features)
+   - Use character names in ALL bubble "character" fields — never "unknown"
+   - Describe returning characters identically each panel (visual consistency for image AI)
+
+OUTPUT: Respond with ONLY valid JSON — no markdown fences, no explanation.
+Format: { "characters": ["Name1 — description", "Name2 — description"], "panels": [...] }
+Each panel: { "scene": "CAMERA: visual description 20-35 words", "caption": string|null, "bubbles": [{character, type, text}], "sfx": string|null, "panel_type": "establishing"|"action"|"dialogue"|"reaction"|"splash" }`;
+
+    const genreRules: Record<string, string> = {
+      "Shonen":       "Include named special attack (shout type). 2+ panels with speed lines. Low-angle for hero power. Moment of doubt → overcome. Power-of-friendship theme.",
+      "Shojo":        "2+ thought bubbles for internal emotion. 1 silent face panel. Floral/sparkle imagery in backgrounds. Poetic introspective captions. Build through near-misses.",
+      "Horror":       "Slow calm opening, dread builds gradually. ECU on disturbing detail. Several silent panels. Final panel unresolved/disturbing. Minimal dialogue, maximum dread.",
+      "Sci-Fi":       "Technical/robotic speech patterns. HUD displays and holographic screens in visuals. Dutch tilt in dystopian moments. POV through visor/screen.",
+      "Fantasy":      "Open with ELS epic world establishing shot. Magic described as visual phenomena. 1 heroic LA shot. Archaic/epic dialogue register.",
+      "Romance":      "2+ CU panels on eyes/faces. Long thought bubbles for feelings. Warm lighting environments. Build through proximity and eye contact.",
+      "Action":       "Dense SFX throughout. Multiple DT shots. Speed lines in 2+ panels. Clear power dynamic between characters.",
+      "Slice of Life": "Natural realistic dialogue. Background environments matter. Quiet emotional moments. No large SFX. Warmth through small details.",
+    };
+
+    const userPrompt = `COMIC BRIEF:
+Title: "${spec.title}"
+Genre: ${spec.genre}
+Art Style: ${spec.style}
+Story Concept: ${spec.prompt}
+Total Panels: ${totalPanels} (${totalPages} page${totalPages > 1 ? "s" : ""}, ${panelsPerPage} panels each)
+
+GENRE RULES for ${spec.genre}: ${genreRules[spec.genre] ?? "Create a compelling story with varied pacing."}
+
+NARRATIVE ARC (distribute across ${totalPanels} panels):
+- Panels 1-${Math.max(1, Math.ceil(totalPanels * 0.2))}: ACT 1 — Establish world + protagonist (use ELS/WS)
+- Panels ${Math.max(2, Math.ceil(totalPanels * 0.2) + 1)}-${Math.ceil(totalPanels * 0.35)}: ACT 2 — Inciting moment, conflict appears
+- Panels ${Math.ceil(totalPanels * 0.35) + 1}-${Math.ceil(totalPanels * 0.55)}: ACT 3 — Rising tension, stakes escalate
+- Panels ${Math.ceil(totalPanels * 0.55) + 1}-${Math.ceil(totalPanels * 0.72)}: ACT 4 — CLIMAX — peak intensity (most dynamic)
+- Panels ${Math.ceil(totalPanels * 0.72) + 1}-${Math.ceil(totalPanels * 0.86)}: ACT 5 — Twist/revelation (CU reaction)
+- Panels ${Math.ceil(totalPanels * 0.86) + 1}-${totalPanels}: ACT 6 — Resolution + thematic close
+
+EXAMPLE PERFECT PANEL:
+{"scene":"LA: Ryuu — silver-haired warrior in torn black gi — fist raised skyward, energy crackling outward, speed lines radiating, explosion lighting behind him","caption":null,"bubbles":[{"character":"Ryuu","type":"shout","text":"PHANTOM BLADE — FINAL STRIKE!!!"}],"sfx":"KRAKOOOOM!!!","panel_type":"splash"}
+
+Now write the complete "${spec.title}" manga script as JSON:`;
+
+    const completion = await groq.chat.completions.create({
+      model: GROQ_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user",   content: userPrompt },
+      ],
+      max_tokens: 6000,
+      temperature: 0.85,
+    });
+
+    const raw = (completion.choices[0]?.message?.content ?? "").trim()
+      .replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
+    const parsed = JSON.parse(raw);
+
+    // Handle both {characters, panels} object AND legacy array format
+    const panelArray = Array.isArray(parsed) ? parsed : (parsed?.panels ?? parsed);
+    if (parsed?.characters) characters = parsed.characters;
+
+    if (Array.isArray(panelArray)) {
+      aiPanels = panelArray.slice(0, totalPanels).map((p: any) => ({
+        scene:    String(p.scene || p.description || ""),
+        caption:  p.caption ?? null,
+        dialogue: p.dialogue ?? (p.bubbles?.[0]?.text ?? null),
+        bubbles:  Array.isArray(p.bubbles) ? p.bubbles.map((b: any) => ({
+          character: String(b.character || "NARRATOR"),
+          type:      ["speech","thought","shout","whisper","caption"].includes(b.type) ? b.type : "speech",
+          text:      String(b.text || ""),
+        })) : [],
+        sfx:        p.sfx ?? null,
+        panel_type: p.panel_type ?? "action",
+      }));
+      console.log(`✅ KRAYON-SENSEI generated ${aiPanels.length} panels | Characters: ${characters.join(", ") || "parsed from panels"}`);
+    }
+  } catch (e: any) {
+    console.warn(`⚠️  Groq unavailable (${e.message ?? "err"}) — using auto-generation`);
+  }
+
+  // ── Fallback: auto-generation from prompt ────────────────────────────────
+  if (aiPanels.length < totalPanels) {
+    const sentences = spec.prompt.replace(/[.!?]\s+/g, "||").split("||").map(s => s.trim()).filter(Boolean);
+    const angles  = ["Wide establishing shot","Close-up shot","Medium shot","Over-the-shoulder shot","Low-angle shot","Bird's-eye view","Dramatic close-up"];
+    const captions = ["The story begins...","Meanwhile...","Suddenly...","In the shadows...","Time stood still.","And so it goes...","The truth revealed.","No turning back now."];
+    while (aiPanels.length < totalPanels) {
+      const i = aiPanels.length;
+      const sentence = sentences[i % sentences.length] ?? spec.prompt.slice(0, 80);
+      aiPanels.push({
+        scene:      `${angles[i % angles.length]}: ${sentence} — ${spec.genre} atmosphere, ${spec.style} art style`,
+        caption:    i % 3 === 0 ? captions[i % captions.length] : null,
+        dialogue:   null,
+        bubbles:    [],
+        sfx:        null,
+        panel_type: i === 0 ? "establishing" : i === Math.floor(totalPanels * 0.6) ? "splash" : "action",
+      });
+    }
+  }
+
+  // ── Generate images via NVIDIA NIM (with Pollinations fallback) and group into pages ──
+  const seed = Math.floor(Math.random() * 99999);
+  const pages: SpecPage[] = [];
+  for (let p = 0; p < totalPages; p++) {
+    const pagePanels: SpecPanel[] = [];
+    for (let j = 0; j < panelsPerPage; j++) {
+      const idx = p * panelsPerPage + j;
+      const ap = aiPanels[idx];
+      // generatePanelImage is async — await each image (NVIDIA NIM is synchronous per request)
+      const imageUrl = await generatePanelImage(ap.scene, spec.style, spec.genre, seed + idx);
+      pagePanels.push({
+        order:             j,
+        scene_description: ap.scene,
+        caption:           ap.caption,
+        dialogue:          ap.dialogue,
+        bubbles:           ap.bubbles ?? [],
+        sfx:               ap.sfx ?? null,
+        image_url:         imageUrl,
+      });
+    }
+    pages.push({ page_number: p + 1, layout: "grid-2x2", panels: pagePanels });
+  }
+
+  return { pages, characters };
+}
+
+// POST /api/ai/generate-and-save
+// Body: { title, genre, style, prompt, panelCount, author_id? }
+// Returns: { comicId, specId, pages }
+app.post("/api/ai/generate-and-save", async (req, res) => {
+  const {
+    title = "Untitled Comic",
+    genre = "Fantasy",
+    style = "American Comic",
+    prompt,
+    panelCount = 4,
+    author_id = "u1",
+  } = req.body;
+
+  if (!prompt) return res.status(400).json({ error: "prompt is required" });
+
+  try {
+    // Step 1: Generate comic structure
+    const { pages, characters } = await generateComicStructure({ title, genre, style, prompt, panelCount });
+    console.log(`📚 Comic characters: ${characters.join(", ") || "(from story)"}`);
+
+    // Step 2: Build the full ComicSpec JSON for record-keeping
+    const specId  = `spec_${uid()}`;
+    const comicId = `c_${uid()}`;
+    const spec: ComicSpec = {
+      id: specId, title, genre, style, prompt, panelCount,
+      author_id, created_at: new Date().toISOString(), pages,
+    };
+
+    // Step 3: Save spec to file and DB
+    const specFilePath = path.join(SPECS_DIR, `${specId}.json`);
+    fs.writeFileSync(specFilePath, JSON.stringify(spec, null, 2));
+
+    // Step 4: Persist everything to SQLite in a single transaction
+    const save = db.transaction(() => {
+      // Create the comic record
+      db.prepare(`INSERT INTO comics (id, title, author_id, genre, style, concept, status, badge) VALUES (?, ?, ?, ?, ?, ?, 'final', 'NEW DROP')`).run(comicId, title, author_id, genre, style, prompt);
+
+      // Store the spec reference
+      db.prepare(`INSERT INTO comic_specs (id, comic_id, spec_json) VALUES (?, ?, ?)`).run(specId, comicId, JSON.stringify(spec));
+
+      // Insert pages and panels
+      for (const page of pages) {
+        const pageId = `pg_${uid()}`;
+        db.prepare(`INSERT INTO pages (id, comic_id, page_number, layout) VALUES (?, ?, ?, ?)`).run(pageId, comicId, page.page_number, page.layout);
+
+        for (const panel of page.panels) {
+          db.prepare(
+            `INSERT INTO panels (id, page_id, panel_order, image_url, caption, dialogue, panel_type, bubbles_json, sfx)
+             VALUES (?, ?, ?, ?, ?, ?, 'normal', ?, ?)`
+          ).run(
+            `pn_${uid()}`,
+            pageId,
+            panel.order,
+            panel.image_url,
+            panel.caption ?? null,
+            panel.dialogue ?? null,
+            panel.bubbles?.length ? JSON.stringify(panel.bubbles) : null,
+            (panel as any).sfx ?? null
+          );
+        }
+      }
+    });
+
+    save();
+    console.log(`✅ Comic saved: ${comicId} (spec: ${specId})`);
+
+    res.status(201).json({ comicId, specId, title, genre, style, pages });
+  } catch (err: any) {
+    console.error("generate-and-save error:", err);
+    res.status(500).json({ error: err.message ?? "Generation failed" });
+  }
+});
+
+// GET /api/comics/:id/read — returns comic + pages + panels for Reader
+app.get("/api/comics/:id/read", (req, res) => {
+  const comic = db.prepare(`SELECT c.*, u.username as author_name FROM comics c JOIN users u ON u.id = c.author_id WHERE c.id = ?`).get(req.params.id);
+  if (!comic) return res.status(404).json({ error: "Comic not found" });
+
+  const pages = db.prepare(`SELECT * FROM pages WHERE comic_id = ? ORDER BY page_number`).all(req.params.id);
+  const result = (pages as any[]).map((page) => ({
+    ...page,
+    panels: (db.prepare(`SELECT * FROM panels WHERE page_id = ? ORDER BY panel_order`).all(page.id) as any[]).map(panel => ({
+      ...panel,
+      bubbles: panel.bubbles_json ? JSON.parse(panel.bubbles_json) : [],
+    })),
+  }));
+
+  // Also return the spec if it exists
+  const spec = db.prepare(`SELECT spec_json FROM comic_specs WHERE comic_id = ?`).get(req.params.id) as any;
+
+  res.json({ comic, pages: result, spec: spec ? JSON.parse(spec.spec_json) : null });
+});
+
+// GET /api/specs/:id — get a specific spec JSON
+app.get("/api/specs/:id", (req, res) => {
+  const row = db.prepare(`SELECT * FROM comic_specs WHERE id = ?`).get(req.params.id) as any;
+  if (!row) return res.status(404).json({ error: "Spec not found" });
+  res.json(JSON.parse(row.spec_json));
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -432,5 +781,6 @@ app.get("/api/health", (_req, res) => res.json({ status: "ok", db: DB_PATH }));
 
 app.listen(PORT, () => {
   console.log(`\n🚀 KRAYON API running → http://localhost:${PORT}/api/health`);
-  console.log(`📦 Database          → ${DB_PATH}\n`);
+  console.log(`📦 Database          → ${DB_PATH}`);
+  console.log(`📁 Specs dir         → ${SPECS_DIR}\n`);
 });

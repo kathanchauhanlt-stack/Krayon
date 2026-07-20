@@ -1,0 +1,72 @@
+{
+  "id": "spec_n5vcdd6j",
+  "title": "Shadow Ronin",
+  "genre": "Cyberpunk",
+  "style": "Manga",
+  "prompt": "Ryuu is the last samurai in Neo-Tokyo 2147. UNIT-7 a rogue AI has begun hunting him. Ryuu confronts UNIT-7 on a rooftop as the city burns, in an explosive final battle.\n\nMain characters: Ryuu (stoic samurai hero), UNIT-7 (cold robotic villain)",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T19:32:11.944Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide shot: Neo-Tokyo burns, Ryuu and UNIT-7 face off on rooftop",
+          "caption": "Neo-Tokyo, 2147. The final confrontation.",
+          "dialogue": null,
+          "bubbles": [],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Wide%20shot%3A%20Neo-Tokyo%20burns%2C%20Ryuu%20and%20UNIT-7%20face%20off%20on%20rooftop%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47606"
+        },
+        {
+          "order": 1,
+          "scene_description": "Close-up: Ryuu's determined eyes, katana at the ready",
+          "caption": null,
+          "dialogue": "My honor, my life.",
+          "bubbles": [
+            {
+              "character": "Ryuu",
+              "type": "thought",
+              "text": "My honor, my life."
+            }
+          ],
+          "sfx": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Close-up%3A%20Ryuu's%20determined%20eyes%2C%20katana%20at%20the%20ready%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47607"
+        },
+        {
+          "order": 2,
+          "scene_description": "Overhead shot: UNIT-7 unleashes missile barrage, Ryuu leaps to dodge",
+          "caption": null,
+          "dialogue": "Elimination protocol engaged.",
+          "bubbles": [
+            {
+              "character": "UNIT-7",
+              "type": "speech",
+              "text": "Elimination protocol engaged."
+            }
+          ],
+          "sfx": "WHOOSH!",
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Overhead%20shot%3A%20UNIT-7%20unleashes%20missile%20barrage%2C%20Ryuu%20leaps%20to%20dodge%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47608"
+        },
+        {
+          "order": 3,
+          "scene_description": "Low angle: Ryuu charges, katana flashing in the firelight, UNIT-7 awaits",
+          "caption": null,
+          "dialogue": "FOR HONOR!",
+          "bubbles": [
+            {
+              "character": "Ryuu",
+              "type": "shout",
+              "text": "FOR HONOR!"
+            }
+          ],
+          "sfx": "CLANG!",
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Low%20angle%3A%20Ryuu%20charges%2C%20katana%20flashing%20in%20the%20firelight%2C%20UNIT-7%20awaits%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=47609"
+        }
+      ]
+    }
+  ]
+}

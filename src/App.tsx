@@ -1,12 +1,11 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
-import AboutUs from "./components/AboutUs";
-import Realm from "./components/Realm";
-import Forge from "./components/Forge";
-import Guild from "./components/Guild";
+import Stream from "./components/Stream";
+import Studio from "./components/Studio";
 import Vault from "./components/Vault";
-import HallOfVisions from "./components/HallOfVisions";
+import Profile from "./components/Profile";
+import Reader from "./components/Reader";
 import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
@@ -15,15 +14,21 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<AboutUs />} />
-          <Route path="realm" element={<Realm />} />
-          <Route path="forge" element={<Forge />} />
-          <Route path="guild" element={<Guild />} />
-          <Route path="vault" element={<Vault />} />
-          <Route path="visions" element={<HallOfVisions />} />
+          <Route path="stream"  element={<Stream />} />
+          <Route path="studio"  element={<Studio />} />
+          <Route path="vault"   element={<Vault />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="reader"  element={<Reader />} />
+          <Route path="reader/:id" element={<Reader />} />
+
+          {/* Legacy route redirects */}
+          <Route path="realm"   element={<Navigate to="/stream"  replace />} />
+          <Route path="forge"   element={<Navigate to="/studio"  replace />} />
+          <Route path="guild"   element={<Navigate to="/profile" replace />} />
+          <Route path="visions" element={<Navigate to="/reader"  replace />} />
+          <Route path="about"   element={<Navigate to="/"        replace />} />
         </Route>
       </Routes>
     </AuthProvider>
   );
 }
-

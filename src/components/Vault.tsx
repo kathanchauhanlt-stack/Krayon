@@ -1,221 +1,143 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "motion/react";
-import { Lock, Unlock, Zap, Trash2, ShieldAlert, Plus, Eye, Loader2, LogIn, User } from "lucide-react";
-import { Pillar } from "../types";
-import { getDrafts, deleteDraft, type ApiDraft } from "../services/api";
+import { Loader2, LogIn, User, Trash2 } from "lucide-react";
+import { getDrafts, deleteDraft, type KrayonDraft } from "../services/firestore";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-interface VaultProps { setActivePillar?: (p: Pillar) => void; }
+type TabFilter = "All" | "Completed" | "Drafts";
 
-export default function Vault({ setActivePillar }: VaultProps) {
+function timeAgo(val: any): string {
+  const date = val?.seconds ? new Date(val.seconds * 1000) : new Date(val);
+  const diff  = Date.now() - date.getTime();
+  const days  = Math.floor(diff / 86_400_000);
+  const hrs   = Math.floor(diff / 3_600_000);
+  if (days > 0) return `${days}d ago`;
+  if (hrs  > 0) return `${hrs}h ago`;
+  return "just now";
+}
+
+function DraftCard({ draft, index, onDelete, onResume }: { draft: KrayonDraft; index: number; onDelete: (id: string) => void; onResume: () => void }) {
+  const isComplete = draft.progress >= 100;
+  return (
+    <motion.div initial={{ opacity: 0, scale: 0.94, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: index * 0.06, type: "spring", stiffness: 220, damping: 20 }} className="flex flex-col overflow-hidden" style={{ background: "#1e2024", border: "1px solid rgba(59,73,76,0.25)", borderRadius: "0.75rem", boxShadow: "0 4px 20px rgba(0,0,0,0.25)" }}>
+      <div className="relative w-full overflow-hidden" style={{ height: 140, background: "#0c0e12" }}>
+        {draft.cover_url
+          ? <img src={draft.cover_url} alt={draft.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+          : <div className="w-full h-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(195,245,255,0.05) 0%, rgba(255,75,137,0.05) 100%)" }}><span className="material-symbols-outlined" style={{ fontSize: 40, color: "#3b494c" }}>image</span></div>
+        }
+        <div className="absolute top-3 left-3">
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", padding: "3px 10px", borderRadius: 9999, background: isComplete ? "rgba(0,218,243,0.2)" : "rgba(40,42,46,0.85)", color: isComplete ? "#00daf3" : "#bac9cc", border: `1px solid ${isComplete ? "rgba(0,218,243,0.4)" : "rgba(59,73,76,0.5)"}` }}>{isComplete ? "Completed" : "Draft"}</span>
+        </div>
+        <div className="absolute top-3 right-3">
+          <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 10px", borderRadius: 9999, background: "rgba(40,42,46,0.85)", color: "#bac9cc", border: "1px solid rgba(59,73,76,0.5)" }}>{draft.genre}</span>
+        </div>
+      </div>
+
+      <div className="p-4 flex flex-col gap-3 flex-1">
+        <div className="flex justify-between items-start">
+          <div className="flex-1 min-w-0">
+            <h3 className="truncate" style={{ fontFamily: "'Anybody', sans-serif", fontWeight: 700, fontSize: 15, color: "#e2e2e8", textTransform: "uppercase" }}>{draft.title}</h3>
+            <p style={{ fontSize: 11, color: "#849396", marginTop: 2 }}>{draft.pages_count} pages · {timeAgo(draft.created_at)}</p>
+          </div>
+          <button onClick={() => onDelete(draft.id!)} className="flex-shrink-0 ml-2 rounded-lg transition-all cursor-pointer" style={{ padding: "6px", background: "none", border: "none", color: "#849396" }}>
+            <Trash2 size={15} />
+          </button>
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center mb-1.5">
+            <span style={{ fontSize: 10, color: "#849396", textTransform: "uppercase", letterSpacing: "0.05em" }}>Progress</span>
+            <span style={{ fontSize: 10, color: "#bac9cc", fontFamily: "'Space Mono', monospace" }}>{draft.progress}%</span>
+          </div>
+          <div className="w-full overflow-hidden" style={{ height: 4, borderRadius: 2, background: "#282a2e" }}>
+            <motion.div initial={{ width: 0 }} animate={{ width: `${draft.progress}%` }} transition={{ duration: 1, delay: 0.2 }} style={{ height: "100%", borderRadius: 2, background: isComplete ? "linear-gradient(90deg, #00daf3, #c3f5ff)" : "linear-gradient(90deg, #ff4b89, #ffb1c3)" }} />
+          </div>
+        </div>
+
+        {!isComplete && (
+          <button onClick={onResume} className="krayon-btn-primary w-full mt-1" style={{ padding: "8px 16px", fontSize: 12, fontFamily: "'Anybody', sans-serif", fontWeight: 700 }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 15, fontVariationSettings: "'FILL' 1" }}>bolt</span> Resume
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Vault() {
   const { user: authUser, signInWithGoogle, signInAnonymously } = useAuth();
-  const [drafts, setDrafts]   = useState<ApiDraft[]>([]);
+  const navigate = useNavigate();
+  const [drafts,  setDrafts]  = useState<KrayonDraft[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error,   setError]   = useState<string | null>(null);
+  const [tab,     setTab]     = useState<TabFilter>("All");
 
   const load = useCallback(async () => {
-    if (!authUser) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      setDrafts(await getDrafts(authUser.uid));
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+    if (!authUser) { setLoading(false); return; }
+    setLoading(true); setError(null);
+    try { setDrafts(await getDrafts(authUser.uid)); }
+    catch (e: any) { setError(e.message); }
+    finally { setLoading(false); }
   }, [authUser]);
 
   useEffect(() => { load(); }, [load]);
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteDraft(id);
-      setDrafts(prev => prev.filter(d => d.id !== id));
-    } catch { /* silent */ }
+    try { await deleteDraft(id); setDrafts((prev) => prev.filter((d) => d.id !== id)); } catch {}
   };
 
   if (!authUser) return (
-    <div className="h-full flex items-center justify-center p-6">
-      <div className="max-w-md border-4 border-ink bg-comic-white p-8 shadow-comic rotate-1 text-center flex flex-col gap-5">
-        <h2 className="text-3xl font-comic text-ink uppercase leading-none">Vault Encrypted</h2>
-        <p className="text-sm font-bold text-ink/75">Your draft archives are securely stored in the cloud. Please sign in to decrypt and resume your comic creations.</p>
+    <div className="h-full flex items-center justify-center p-6" style={{ background: "#111317" }}>
+      <div className="max-w-sm w-full p-8 flex flex-col gap-5 text-center" style={{ background: "#1e2024", border: "1px solid rgba(59,73,76,0.4)", borderRadius: "1rem", boxShadow: "0 16px 40px rgba(0,0,0,0.4)" }}>
+        <span className="material-symbols-outlined mx-auto" style={{ fontSize: 48, color: "#c3f5ff" }}>lock</span>
+        <div>
+          <h2 style={{ fontFamily: "'Anybody', sans-serif", fontWeight: 900, fontSize: 22, color: "#e2e2e8", textTransform: "uppercase" }}>Vault Encrypted</h2>
+          <p style={{ fontSize: 13, color: "#bac9cc", marginTop: 8 }}>Sign in to access your personal comic collection.</p>
+        </div>
         <div className="flex flex-col gap-3">
-          <button onClick={signInWithGoogle} className="comic-button-pink py-3 text-sm flex items-center justify-center gap-2">
-            <LogIn size={16} /> Decrypt with Google
-          </button>
-          <button onClick={signInAnonymously} className="comic-button-cyan py-3 text-sm flex items-center justify-center gap-2">
-            <User size={16} /> Enter as Guest
-          </button>
+          <button onClick={signInWithGoogle} className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm uppercase cursor-pointer" style={{ background: "#EA4335", color: "#fff", border: "none", boxShadow: "0 4px 12px rgba(234,67,53,0.3)" }}><LogIn size={15} /> Decrypt with Google</button>
+          <button onClick={signInAnonymously} className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm uppercase cursor-pointer" style={{ background: "#c3f5ff", color: "#00363d", border: "none" }}><User size={15} /> Enter as Guest</button>
         </div>
       </div>
     </div>
   );
 
-
-  const totalPages = drafts.reduce((a, d) => a + d.pages_count, 0);
-  const locked     = drafts.filter(d => d.locked).length;
+  const visible = drafts.filter((d) => {
+    if (tab === "Completed") return d.progress >= 100;
+    if (tab === "Drafts")    return d.progress < 100;
+    return true;
+  });
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar bg-transparent relative">
-      <div className="absolute inset-0 bg-halftone-white opacity-[0.04] pointer-events-none" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-24">
-
-        {/* Header */}
-        <header className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <div className="border-4 border-ink bg-comic-white inline-block p-4 md:p-6 shadow-comic transform rotate-1">
-            <div className="flex items-center gap-3 text-ink mb-2 border-b-4 border-ink pb-2">
-              <ShieldAlert size={24} strokeWidth={3} className="shrink-0" />
-              <span className="text-sm font-comic tracking-wider uppercase">High-Security Archive</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-comic tracking-widest text-shadow-comic text-comic-yellow leading-none">
-              THE VAULT
-            </h1>
+    <div style={{ background: "#111317", minHeight: "100%" }}>
+      <div className="max-w-screen-xl mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-32">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
+          <div>
+            <h1 style={{ fontFamily: "'Anybody', sans-serif", fontWeight: 800, fontSize: "clamp(36px, 6vw, 56px)", color: "#e2e2e8", letterSpacing: "-0.02em", lineHeight: 1, textTransform: "uppercase" }}>VAULT</h1>
+            <p style={{ color: "#bac9cc", marginTop: 8, fontSize: 14 }}>Your Personal Comic Collection.</p>
           </div>
-
-          {/* Stats */}
-          {!loading && (
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="bg-comic-pink border-4 border-ink px-6 py-4 flex flex-col items-center shadow-comic transform -rotate-2 shrink-0">
-                <span className="text-[10px] font-comic tracking-widest text-ink mb-1 uppercase">Encrypted Slots</span>
-                <span className="text-3xl font-comic text-comic-white font-mono">{locked} / {drafts.length}</span>
-              </div>
-              <div className="bg-comic-blue border-4 border-ink px-6 py-4 flex flex-col items-center shadow-comic transform rotate-1 shrink-0">
-                <span className="text-[10px] font-comic tracking-widest text-ink mb-1 uppercase">Total Pages</span>
-                <span className="text-3xl font-comic text-ink font-mono">{totalPages}</span>
-              </div>
-            </div>
-          )}
-        </header>
-
-        {/* Loading */}
-        {loading && (
-          <div className="flex items-center justify-center py-32 gap-3">
-            <Loader2 size={32} className="text-comic-yellow animate-spin" />
-            <span className="font-comic text-2xl text-comic-white uppercase">Unlocking Vault…</span>
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="max-w-md mx-auto border-4 border-ink bg-comic-yellow p-6 shadow-comic rotate-1 text-center">
-            <p className="font-comic text-2xl text-ink uppercase mb-2">⚡ API Offline</p>
-            <p className="text-sm font-bold text-ink">{error}</p>
-            <p className="text-xs text-ink/70 mt-2">Run: <code className="bg-ink text-comic-white px-2 py-0.5">npx tsx server/index.ts</code></p>
-            <button onClick={load} className="mt-4 comic-button-pink px-4 py-2 text-sm">Retry</button>
-          </div>
-        )}
-
-        {/* Grid */}
-        {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {drafts.map((draft, i) => (
-              <motion.div
-                key={draft.id}
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: i * 0.07, type: "spring", stiffness: 220, damping: 20 }}
-                className={`comic-panel relative overflow-hidden flex flex-col min-h-[280px] md:min-h-[320px] ${draft.locked ? "bg-gray-200" : "bg-comic-white"}`}
-              >
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                  <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-[40px] ${draft.locked ? "bg-gray-500/40" : "bg-comic-blue/30"}`} />
-                  <div className="w-full h-full bg-halftone opacity-20" />
-                </div>
-
-                <div className="p-6 flex flex-col flex-1 relative z-10">
-                  {/* Icon row */}
-                  <div className="flex justify-between items-start mb-4 pb-4 border-b-4 border-ink">
-                    <div className={`p-3 border-4 border-ink shadow-[3px_3px_0_#111] ${draft.locked ? "bg-comic-yellow text-ink" : "bg-comic-green text-ink"}`}>
-                      {draft.locked
-                        ? <Lock size={22} strokeWidth={3} />
-                        : <Unlock size={22} strokeWidth={3} className="animate-pulse" />
-                      }
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-ink text-comic-white border-2 border-ink font-comic text-xs uppercase">
-                        {draft.genre}
-                      </span>
-                      <button
-                        onClick={() => handleDelete(draft.id)}
-                        className="text-ink hover:bg-comic-pink hover:text-comic-white border-4 border-transparent hover:border-ink p-1.5 transition-all"
-                      >
-                        <Trash2 size={18} strokeWidth={3} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <h3 className="text-2xl font-comic tracking-wider mb-1 text-ink line-clamp-2 leading-tight uppercase flex-1">
-                    {draft.title}
-                  </h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs uppercase font-bold tracking-widest text-ink bg-comic-white inline-block px-1 border-2 border-ink">
-                      {draft.pages_count} Pages
-                    </span>
-                  </div>
-
-                  {/* Progress */}
-                  <div className="space-y-2 mt-auto">
-                    <div className="flex justify-between text-xs font-comic uppercase tracking-wider text-ink">
-                      <span>Continuity Pulse</span>
-                      <span className="font-mono font-bold">{draft.progress}%</span>
-                    </div>
-                    <div className="h-4 bg-comic-white border-4 border-ink overflow-hidden relative">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${draft.progress}%` }}
-                        transition={{ duration: 1.2, delay: 0.2 + i * 0.08, ease: "easeOut" }}
-                        className={`h-full border-r-4 border-ink ${draft.locked ? "bg-gray-500" : "bg-comic-blue"}`}
-                      />
-                      <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(0,0,0,0.12)_8px,rgba(0,0,0,0.12)_16px)]" />
-                    </div>
-
-                    <div className="flex gap-2 pt-1">
-                      {draft.locked ? (
-                        <button className="flex-1 comic-button-yellow py-2.5 text-sm flex items-center justify-center gap-2">
-                          <Lock size={14} strokeWidth={3} /> DECRYPT ARCHIVE
-                        </button>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => setActivePillar?.("forge")}
-                            className="flex-1 comic-button-pink py-2.5 text-sm flex items-center justify-center gap-2"
-                          >
-                            <Zap size={14} strokeWidth={3} /> RESUME FORGING
-                          </button>
-                          <button
-                            onClick={() => setActivePillar?.("visions")}
-                            className="comic-button-cyan px-3 py-2.5 flex items-center justify-center"
-                          >
-                            <Eye size={16} strokeWidth={3} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+          <div className="flex gap-2 flex-wrap">
+            {(["All", "Completed", "Drafts"] as TabFilter[]).map((t) => (
+              <button key={t} onClick={() => setTab(t)} className={tab === t ? "filter-pill-active" : "filter-pill"}>{t}</button>
             ))}
+          </div>
+        </div>
 
-            {/* New draft slot */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: drafts.length * 0.07, type: "spring" }}
-              onClick={() => setActivePillar?.("forge")}
-              className="border-8 border-dashed border-comic-white/20 p-8 flex flex-col items-center justify-center gap-4
-                opacity-60 hover:opacity-100 hover:border-comic-yellow transition-all group cursor-pointer min-h-[280px] md:min-h-[320px]"
-            >
-              <div className="w-20 h-20 rounded-full border-4 border-comic-white/30 group-hover:border-ink bg-obsidian
-                group-hover:bg-comic-yellow flex items-center justify-center group-hover:scale-110 transition-all shadow-[4px_4px_0_rgba(255,255,255,0.1)] group-hover:shadow-comic">
-                <Plus size={32} className="text-comic-white/50 group-hover:text-ink transition-colors" strokeWidth={3} />
+        {loading && <div className="flex items-center justify-center py-32 gap-3"><Loader2 size={28} className="animate-spin" style={{ color: "#c3f5ff" }} /><span style={{ fontFamily: "'Anybody', sans-serif", fontWeight: 700, color: "#e2e2e8", fontSize: 18, textTransform: "uppercase" }}>Unlocking Vault…</span></div>}
+        {error   && <div className="max-w-md mx-auto p-6 text-center rounded-xl" style={{ background: "#1e2024", border: "1px solid rgba(255,180,171,0.2)" }}><p style={{ color: "#ffb4ab", fontWeight: 700 }}>⚡ Firestore Error</p><p style={{ fontSize: 13, color: "#bac9cc" }}>{error}</p><button onClick={load} className="krayon-btn-primary mt-4 mx-auto" style={{ width: "fit-content" }}>Retry</button></div>}
+
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {visible.map((draft, i) => <DraftCard key={draft.id} draft={draft} index={i} onDelete={handleDelete} onResume={() => navigate("/studio")} />)}
+            <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: visible.length * 0.06 }} onClick={() => navigate("/studio")} className="flex flex-col items-center justify-center gap-4 cursor-pointer" style={{ minHeight: 220, border: "2px dashed rgba(59,73,76,0.5)", borderRadius: "0.75rem", padding: "2rem" }}>
+              <div className="flex items-center justify-center rounded-2xl" style={{ width: 56, height: 56, background: "#282a2e", border: "1px solid rgba(59,73,76,0.5)" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 28, color: "#bac9cc" }}>add</span>
               </div>
-              <span className="text-lg font-comic uppercase tracking-wider text-comic-white/50 group-hover:text-comic-white text-center transition-colors">
-                Begin New Forge
-              </span>
+              <div className="text-center">
+                <p style={{ fontFamily: "'Anybody', sans-serif", fontWeight: 700, fontSize: 14, color: "#bac9cc", textTransform: "uppercase", letterSpacing: "0.04em" }}>START NEW</p>
+                <p style={{ fontSize: 12, color: "#849396", marginTop: 4 }}>Ignite a new project in the Studio.</p>
+              </div>
             </motion.div>
           </div>
         )}

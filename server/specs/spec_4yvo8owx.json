@@ -1,0 +1,46 @@
+{
+  "id": "spec_4yvo8owx",
+  "title": "Shadow Ronin",
+  "genre": "Cyberpunk",
+  "style": "Manga",
+  "prompt": "A lone samurai discovers he is the last defender of a neon city as robotic soldiers close in. He makes a final stand on a crumbling skyscraper rooftop.",
+  "panelCount": 4,
+  "author_id": "u1",
+  "created_at": "2026-07-14T18:49:19.381Z",
+  "pages": [
+    {
+      "page_number": 1,
+      "layout": "grid-2x2",
+      "panels": [
+        {
+          "order": 0,
+          "scene_description": "Wide shot: cityscape at sunset, skyscrapers ablaze",
+          "caption": "Neon dreams dying...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Wide%20shot%3A%20cityscape%20at%20sunset%2C%20skyscrapers%20ablaze%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=86535"
+        },
+        {
+          "order": 1,
+          "scene_description": "Low angle: samurai stands on rooftop, katana drawn",
+          "caption": null,
+          "dialogue": "I will not yield",
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Low%20angle%3A%20samurai%20stands%20on%20rooftop%2C%20katana%20drawn%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=86536"
+        },
+        {
+          "order": 2,
+          "scene_description": "Overhead shot: robotic army surrounds skyscraper",
+          "caption": "The siege begins...",
+          "dialogue": null,
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Overhead%20shot%3A%20robotic%20army%20surrounds%20skyscraper%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=86537"
+        },
+        {
+          "order": 3,
+          "scene_description": "Close-up: samurai leaps, katana flashing in neon light",
+          "caption": null,
+          "dialogue": "For honor!",
+          "image_url": "https://image.pollinations.ai/prompt/Manga%20comic%20book%20panel%2C%20Cyberpunk%20genre%3A%20Close-up%3A%20samurai%20leaps%2C%20katana%20flashing%20in%20neon%20light%2C%20detailed%20manga%2Fcomic%20illustration%2C%20bold%20linework%2C%20dramatic%20composition%2C%20professional%20comic%20art?width=768&height=512&nologo=1&model=flux&seed=86538"
+        }
+      ]
+    }
+  ]
+}
