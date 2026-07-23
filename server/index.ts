@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
+import pipelineRouter from "./routes/pipeline.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -778,6 +779,11 @@ app.get("/api/specs/:id", (req, res) => {
 //  HEALTH
 // ══════════════════════════════════════════════════════════════════════════════
 app.get("/api/health", (_req, res) => res.json({ status: "ok", db: DB_PATH }));
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PIPELINE — Light Novel → Comic (Firebase Realtime DB)
+// ══════════════════════════════════════════════════════════════════════════════
+app.use("/api/pipeline", pipelineRouter);
 
 app.listen(PORT, () => {
   console.log(`\n🚀 KRAYON API running → http://localhost:${PORT}/api/health`);

@@ -6,6 +6,7 @@ import Studio from "./components/Studio";
 import Vault from "./components/Vault";
 import Profile from "./components/Profile";
 import Reader from "./components/Reader";
+import LabReader from "./components/LabReader";
 import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
@@ -20,6 +21,8 @@ export default function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="reader"  element={<Reader />} />
           <Route path="reader/:id" element={<Reader />} />
+          <Route path="lab"     element={<LabReader />} />
+          <Route path="lab/:projectId" element={<LabReader />} />
 
           {/* Legacy route redirects */}
           <Route path="realm"   element={<Navigate to="/stream"  replace />} />

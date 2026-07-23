@@ -192,3 +192,54 @@ export interface ReaderComic {
 }
 
 export const readComic = (id: string) => apiFetch<ReaderComic>(`/api/comics/${id}/read`);
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PIPELINE — Light Novel → Comic (Firebase Realtime DB)
+// ══════════════════════════════════════════════════════════════════════════════
+
+export interface PipelineCreateInput {
+  title: string;
+  genre: string;
+  style: string;
+  prompt: string;
+  characters?: Array<{
+    name: string;
+    lora_id: string;
+    trigger_word: string;
+    visual_description: string;
+  }>;
+  owner_id?: string;
+}
+
+export const pipelineCreateProject = (input: PipelineCreateInput) =>
+  apiFetch<{ projectId: string; title: string }>("/api/pipeline/create-project", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+
+export const pipelineGenerateNovel = (projectId: string) =>
+  apiFetch<{ ok: boolean; sceneCount: number }>("/api/pipeline/generate-novel", {
+    method: "POST",
+    body: JSON.stringify({ projectId }),
+  });
+
+export const pipelineGeneratePanels = (projectId: string) =>
+  apiFetch<{ ok: boolean; panelCount: number }>("/api/pipeline/generate-panels", {
+    method: "POST",
+    body: JSON.stringify({ projectId }),
+  });
+
+export const pipelineRenderPanel = (projectId: string, panelId: string) =>
+  apiFetch<{ ok: boolean; panelId: string; imageUrl: string }>("/api/pipeline/render-panel", {
+    method: "POST",
+    body: JSON.stringify({ projectId, panelId }),
+  });
+
+export const pipelineRenderAll = (projectId: string) =>
+  apiFetch<{ ok: boolean; renderedCount: number; totalPending: number; errors: string[] }>("/api/pipeline/render-all", {
+    method: "POST",
+    body: JSON.stringify({ projectId }),
+  });
+
+export const pipelineGetProject = (projectId: string) =>
+  apiFetch<any>(`/api/pipeline/project/${projectId}`);
